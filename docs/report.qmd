@@ -1,0 +1,56 @@
+---
+title: "Biomarker Analysis — Physiological Markers of Relaxation"
+format:
+  typst:
+    margin:
+      x: 1.8cm
+      y: 1.5cm
+    fontsize: 10pt
+    include-in-header:
+      text: |
+        #set page(numbering: none, footer: align(center)[Author: Salil Apte \u{00B7} 19th April, 2026])
+        #set par(leading: 0.55em, spacing: 0.8em)
+        #set block(spacing: 0.8em)
+        #set heading(numbering: none)
+        #show heading.where(level: 2): set text(size: 11pt)
+        #show heading.where(level: 2): set block(above: 1em, below: 0.5em)
+        #show figure.caption: set text(size: 9pt)
+---
+
+## Approach & Pipeline
+
+Signal validation used modality-specific masks (pupil, PPG heart rate, gaze), each combined with a motion filter, aggregated into trial-level quality scores (0–2); poor trials (score 0) were excluded. From valid trials, 39 per-trial columns were extracted (including `quality_score`). Subject-level aggregation uses 38 physiological features (median + IQR) plus subject-level signal quality metrics (`mean_quality`, `n_valid_trials`), giving a final feature set of 78 columns.
+
+After removing near-constant and highly correlated features (|r| > 0.95, keeping the more stable variant), all features were z-score standardised. Candidates were selected via a multi-step funnel:
+(1) dual-correlation stability: top 10 by |Spearman ρ| ∩ |Pearson r| for at least one STAI target;
+(2) quality-independence: calibration/quality correlations below the weakest STAI association;
+(3) permutation test: 1 000 shuffles, all p ≤ 0.001;
+(4) confounding metadata check: effect-size thresholds (|d| ≥ 0.3, η² ≥ 0.04; Cohen, 1988) to rule out demographic confounds.
+PCA was applied as the dimensionality-reduction step.
+
+## Results & Interpretation
+
+Six candidate biomarkers survived, all pupil-derived. The figure below shows their STAI correlations (left) and metadata effect sizes (right); all permutation p ≤ 0.001 and all metadata-confound effects fall well below flagging thresholds.
+
+```{=typst}
+#figure(
+  image("candidate_summary.png", width: 100%, height: 6.5cm, fit: "cover"),
+  caption: [Candidate biomarker summary],
+)
+```
+
+The candidates group into three physiological themes:
+
+- Tonic arousal: baseline pupil size (`pupil_baseline_mean`) and mean pupil size during relaxation (`pupil_relax_mean`) reflect resting pupil size driven by the locus coeruleus–norepinephrine (LC-NE) pathway; higher trait anxiety corresponds to a larger tonic pupil (Joshi et al., 2016).
+- Phasic response: relative pupil change (`pupil_relative_delta`, strongest, ρ = 0.38 with STAI_T) and pupil relaxation slope (`pupil_relax_slope`) capture the magnitude and rate of sympathetic withdrawal during relaxation.
+- Temporal dynamics: pupil adaptation nonlinearity (`pupil_nonlinearity`) and early-vs-late pupil difference (`pupil_early_late_diff`) reflect competing autonomic drives producing adaptation over the 30 s relaxation window.
+
+PCA confirmed this: PC1 (23 %) captured data-quality variation; PC2 (10 %) formed the anxiety-related axis on which all six candidates load. Pupil features dominate over heart rate, likely because PPG-based BPM in VR suffers from motion artefacts.
+
+## Limitations & Future Work
+
+Effect sizes are moderate (max ρ = 0.38), consistent with single-feature physiological correlates of self-report. No predictive model or cross-validation was applied, it remains exploratory. BPM features were eliminated early; better PPG artefact rejection could recover heart-rate biomarkers. Following could implemented with more time: elastic-net with nested CV for a multivariate biomarker index, bootstrap CIs on ρ, trial-order modelling for habituation effects, and UMAP for participant stratification.
+
+## Time Allocation
+
+~1.5 h pipeline & validation · ~1 h feature engineering · ~1 h analysis & PCA · ~1 h notebook, plots & report — **4.5 h total**.

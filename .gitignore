@@ -1,0 +1,25 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Data files (keep folder structure only)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Quarto build artifacts
+.quarto/
+_freeze/
+*_files/
+docs/report.html
+docs/report.pdf
+docs/report.tex
+docs/report.typ

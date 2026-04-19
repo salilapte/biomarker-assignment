@@ -1,0 +1,11 @@
+feature,ρ STAI_S,stable_S,ρ STAI_T,stable_T,quality-driven
+pupil_baseline_mean,+0.2170,✓,+0.2096,✓,
+pupil_early_late_diff,+0.2802,✓,+0.3317,✓,
+pupil_nonlinearity,+0.2734,✓,+0.3249,✓,
+pupil_rebound,-0.2399,✓,-0.2771,✓,
+pupil_relative_delta,+0.3157,✓,+0.3766,✓,
+pupil_relative_delta_iqr,-0.2094,✓,-0.2234,✓,⚠
+pupil_relax_detrended_std,-0.1620,✓,-0.1755,✓,⚠
+pupil_relax_mean,+0.3131,✓,+0.3275,✓,
+pupil_relax_p90_p10,-0.1939,✓,-0.2145,✓,⚠
+pupil_relax_slope,+0.2725,,+0.3236,,

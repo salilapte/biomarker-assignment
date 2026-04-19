@@ -1,0 +1,18 @@
+section,feature,ρ STAI_S,ρ STAI_T,stable,quality-driven,PC2 loading,PC3 loading,Gender,WearsGlasses,Handedness,BloodType
+Candidate,pupil_baseline_mean,+0.2170,+0.2096,True,False,+0.067,+0.431,0.025 (d=0.18),0.315 (d=0.08),0.531 (d=0.01),0.765 (η²=0.000)
+Candidate,pupil_early_late_diff,+0.2802,+0.3317,True,False,+0.348,-0.147,0.709 (d=0.00),0.627 (d=0.06),0.759 (d=0.02),0.015 (η²=0.015)
+Candidate,pupil_nonlinearity,+0.2734,+0.3249,True,False,+0.249,+0.147,0.440 (d=0.07),0.481 (d=0.07),0.937 (d=0.04),0.035 (η²=0.011)
+Candidate,pupil_rebound,-0.2399,-0.2771,True,False,-0.343,+0.208,0.682 (d=0.02),0.636 (d=0.01),0.781 (d=0.05),0.016 (η²=0.015)
+Candidate,pupil_relative_delta,+0.3157,+0.3766,True,False,+0.397,+0.004,0.426 (d=0.08),0.505 (d=0.03),0.694 (d=0.04),0.017 (η²=0.015)
+Candidate,pupil_relax_mean,+0.3131,+0.3275,True,False,+0.207,+0.385,0.023 (d=0.19),0.320 (d=0.06),0.605 (d=0.02),0.457 (η²=0.000)
+Other PC loader,bpm_break_mean_iqr,+0.0038,+0.0182,False,False,+0.007,+0.274,,,,
+Other PC loader,bpm_rebound_iqr,+0.0348,+0.0797,False,False,+0.020,+0.306,,,,
+Other PC loader,pupil_bpm_corr,-0.0315,-0.0452,False,False,+0.069,-0.224,,,,
+Other PC loader,pupil_bpm_corr_diff,-0.0680,-0.0656,False,False,-0.052,+0.191,,,,
+Other PC loader,pupil_bpm_corr_diff_iqr,-0.1417,-0.1561,False,True,-0.171,-0.082,,,,
+Other PC loader,pupil_bpm_corr_early,+0.0754,+0.0462,False,False,+0.081,-0.276,,,,
+Other PC loader,pupil_bpm_corr_early_iqr,-0.1486,-0.1547,False,False,-0.235,-0.089,,,,
+Other PC loader,pupil_bpm_corr_iqr,-0.1227,-0.1196,False,True,-0.152,-0.153,,,,
+Other PC loader,pupil_relative_delta_iqr,-0.2094,-0.2234,True,True,-0.264,-0.082,,,,
+Other PC loader,pupil_relax_p90_p10,-0.1939,-0.2145,True,True,-0.208,+0.005,,,,
+Other PC loader,pupil_relax_slope,+0.2725,+0.3236,False,False,+0.186,-0.211,,,,
