@@ -4,7 +4,7 @@ format:
   typst:
     margin:
       x: 1.8cm
-      y: 1.5cm
+      y: 1.25cm
     fontsize: 10pt
     include-in-header:
       text: |
