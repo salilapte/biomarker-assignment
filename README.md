@@ -60,6 +60,12 @@ The interactive notebook is a separate exploration layer:
 jupyter notebook analysis.ipynb
 ```
 
+The short report is authored in Quarto and can be rendered to PDF with:
+
+```bash
+quarto render docs/report.qmd --to typst
+```
+
 ## Project structure
 
 ```
@@ -78,6 +84,8 @@ data/
 docs/
   approach.md            Analysis plan, hypotheses, feature definitions
   problem.md             Original assignment brief
+  report.qmd             One-page submission report (Quarto source)
+  report.pdf             Rendered one-page report
 output/
   plots/                 Saved figures (PNG, 150 dpi)
   results/               Summary tables (CSV)
@@ -108,15 +116,19 @@ Place raw CSV files in `data/raw/`:
 | `confound_corr.png` | Top feature correlations with confounders |
 | `feature_scatter_stai_s.png` | Top features vs STAI_S scatter |
 | `feature_scatter_stai_t.png` | Top features vs STAI_T scatter |
+| `permutation_null_stai_s.png` | Permutation null distributions for candidate features vs STAI_S |
+| `permutation_null_stai_t.png` | Permutation null distributions for candidate features vs STAI_T |
 | `scree.png` | PCA explained variance |
 | `pca_colored.png` | PC1 vs PC2 colored by STAI, calibration, quality |
+| `candidate_loadings.png` | Candidate features highlighted within top PC2/PC3 loadings |
+| `candidate_summary.png` | Candidate STAI correlations and metadata-confound effect sizes |
 
 ### Analysis — tables (`output/results/`)
 
 | File | Description |
 |------|-------------|
 | `relevance_table.csv` | Top STAI features with stability + confound flags |
-| `loadings_summary.csv` | PC2/PC3 loadings + H5 metadata tests |
+| `loadings_summary.csv` | Candidate-centric summary table with PC2/PC3 loadings + metadata tests |
 | `pc_target_correlations.csv` | PCs vs STAI + confounders (Spearman) |
 | `zscore_params.csv` | Feature mean/std for re-standardization (API-ready) |
 

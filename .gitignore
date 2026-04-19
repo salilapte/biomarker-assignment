@@ -20,6 +20,5 @@ data/processed/*
 _freeze/
 *_files/
 docs/report.html
-docs/report.pdf
 docs/report.tex
 docs/report.typ
