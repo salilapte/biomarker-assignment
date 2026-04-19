@@ -355,6 +355,7 @@ def plot_feature_scatter(
         fig, axes = plt.subplots(
             1, n,
             figsize=(figsize_per_panel[0] * n, figsize_per_panel[1]),
+            constrained_layout=True,
             squeeze=False,
         )
 
@@ -374,9 +375,8 @@ def plot_feature_scatter(
             ax.set_ylabel(target_col if idx == 0 else "")
             ax.tick_params(labelsize=7)
 
-        fig.colorbar(sc, ax=axes.ravel().tolist(), shrink=0.6, label=color_by.name)
+        fig.colorbar(sc, ax=axes.ravel().tolist(), shrink=0.7, pad=0.02, label=color_by.name)
         fig.suptitle(f"Top features vs {target_col}", fontsize=11)
-        fig.tight_layout()
         figs.append(fig)
     return figs
 
