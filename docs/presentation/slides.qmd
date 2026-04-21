@@ -1,0 +1,843 @@
+---
+title: "Physiological Biomarkers of Relaxation"
+subtitle: "Home Assignment Presentation"
+author: "Salil Apte"
+date: "2026-04-21"
+format:
+  revealjs:
+    slide-number: c/t
+    transition: fade
+    incremental: false
+    width: 1280
+    height: 800
+    fig-align: center
+    embed-resources: true
+    toc: false
+    progress: true
+    history: false
+    code-line-numbers: false
+    controls-layout: edges
+    smaller: false
+---
+
+```{=html}
+<style>
+:root {
+  --accent: #1b6b73;
+  --accent-soft: #d7eef0;
+  --ink: #1f2a33;
+  --muted: #5f6b73;
+  --warm: #d7923b;
+  --danger: #b54d42;
+  --ok: #2e7d5b;
+  --panel: #f7faf9;
+}
+
+.reveal {
+  font-size: 32px;
+}
+
+.reveal h1, .reveal h2, .reveal h3 {
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+
+.reveal h2 {
+  margin-bottom: 0.45em;
+}
+
+.reveal p, .reveal li {
+  color: var(--ink);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.accent {
+  color: var(--accent);
+}
+
+.lead {
+  font-size: 1.15em;
+  line-height: 1.35;
+}
+
+.small {
+  font-size: 0.72em;
+}
+
+.tiny {
+  font-size: 0.58em;
+}
+
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.pill {
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-size: 0.72em;
+  border: 1px solid rgba(27, 107, 115, 0.18);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.card-grid.three {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.card {
+  background: linear-gradient(180deg, #ffffff 0%, var(--panel) 100%);
+  border: 1px solid rgba(27, 107, 115, 0.12);
+  border-radius: 18px;
+  padding: 18px 20px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+  text-align: left;
+}
+
+.card h3 {
+  margin: 0 0 10px 0;
+  font-size: 0.92em;
+}
+
+.card p {
+  font-size: 0.68em;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.hero-band {
+  background: linear-gradient(135deg, #eef8f8 0%, #fff7eb 100%);
+  border-radius: 24px;
+  padding: 26px 30px;
+  text-align: left;
+  box-shadow: inset 0 0 0 1px rgba(27, 107, 115, 0.08);
+}
+
+.metric-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.metric {
+  background: #fff;
+  border-radius: 18px;
+  padding: 16px 18px;
+  border: 1px solid rgba(27, 107, 115, 0.12);
+}
+
+.metric .value {
+  font-size: 1.1em;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.metric .label {
+  font-size: 0.62em;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.score-band {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr;
+  gap: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  margin-top: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.score-band > div {
+  padding: 18px;
+  text-align: center;
+  font-size: 0.75em;
+  font-weight: 600;
+}
+
+.score-poor { background: #f4d7d3; }
+.score-ok { background: #faedbf; }
+.score-good { background: #d8efe1; }
+
+.equation-box {
+  background: #fff;
+  border: 1px solid rgba(27, 107, 115, 0.12);
+  border-radius: 18px;
+  padding: 20px;
+  margin-top: 18px;
+}
+
+.callout {
+  background: #fff;
+  border-left: 6px solid var(--accent);
+  padding: 16px 18px;
+  border-radius: 10px;
+  font-size: 0.72em;
+}
+
+.ascii-guide pre {
+  font-size: 0.44em;
+  line-height: 1.2;
+}
+
+.evidence-grid {
+  display: grid;
+  grid-template-columns: 2.2fr repeat(6, 1fr);
+  gap: 8px;
+  align-items: stretch;
+  margin-top: 14px;
+  font-size: 0.6em;
+}
+
+.evidence-grid .head,
+.evidence-grid .cell {
+  padding: 10px 8px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.evidence-grid .head {
+  background: #eaf4f5;
+  font-weight: 700;
+}
+
+.evidence-grid .rowname {
+  text-align: left;
+  background: #f5f8f8;
+  font-weight: 600;
+}
+
+.ok { background: #dff2e6; color: #17563c; }
+.warn { background: #faedbf; color: #745100; }
+
+.footer-note {
+  font-size: 0.58em;
+  color: var(--muted);
+  margin-top: 12px;
+}
+
+.two-col-list li {
+  margin-bottom: 12px;
+}
+</style>
+```
+
+## Why This Work Matters
+
+::: {.hero-band}
+This assignment asks a practical question: can short VR relaxation trials yield pupil-based biomarkers that are **physiologically plausible**, **statistically robust**, and **usable in production workflows**?
+:::
+
+::: {.pill-row}
+<div class="pill fragment">Signal validation before inference</div>
+<div class="pill fragment">Feature engineering grounded in physiology</div>
+<div class="pill fragment">Robustness checks beyond a single p-value</div>
+<div class="pill fragment">Pipeline structure that can move toward backend use</div>
+:::
+
+::: notes
+- Frame the talk as three threads: (1) signal quality and validation, (2) feature engineering and candidate selection, (3) how the pipeline could sit in a product.
+- "Noisier labels" = self-reported STAI scores are subjective and vary across time, unlike objective performance labels. "Stricter process expectations" = healthcare/wellness contexts require audit trails, version control, and reproducibility that a research notebook alone does not provide.
+:::
+
+## Assignment Goals
+
+::: {.columns}
+::: {.column width="52%"}
+<div class="fragment callout">Identify physiological features linked to STAI state and trait anxiety.</div>
+
+<div class="fragment callout" style="margin-top:12px;">Show how biomarker sensitivity is tested, not just claimed.</div>
+
+<div class="fragment callout" style="margin-top:12px;">Discuss implementation, scaling, and regulated software-development constraints.</div>
+:::
+::: {.column width="48%"}
+### What I optimised for
+
+- Physiological interpretability
+- Reproducible pipeline structure 
+- Conservative candidate selection 
+- Clean handoff to product/backend discussions
+:::
+:::
+
+::: notes
+- The brief asks for workflow and production discussion, not only correlation results — that is why the deck covers architecture and SDLC (Software Development Life Cycle) slides.
+- SDLC in a regulated context means each code change is reviewed, validated against a locked dataset, and traceable to a versioned release before it reaches users.
+:::
+
+## Hypotheses
+
+```{=html}
+<div class="card-grid">
+  <div class="card fragment">
+    <h3>H1 · Task response</h3>
+    <p>Physiological signals should change systematically from baseline to relaxation.</p>
+  </div>
+  <div class="card fragment">
+    <h3>H2 · Relative features</h3>
+    <p>Baseline-normalised features should capture the task better than raw levels alone.</p>
+  </div>
+  <div class="card fragment">
+    <h3>H3 · Anxiety linkage</h3>
+    <p>Pupil, heart-rate, and gaze-derived features should relate to STAI_S and STAI_T.</p>
+  </div>
+  <div class="card fragment">
+    <h3>H4 · Sensitivity and specificity</h3>
+    <p>Good biomarkers should survive quality/confound checks rather than only correlate once.</p>
+  </div>
+  <div class="card fragment">
+    <h3>H5 · Metadata confounds</h3>
+    <p>Features strongly driven by demographics or acquisition context are weaker candidates.</p>
+  </div>
+  <div class="card fragment">
+    <h3>Focus</h3>
+    <p>The heavy methodological effort goes into H4: demonstrating robustness, not only ranking features.</p>
+  </div>
+</div>
+```
+
+::: notes
+- Reused from the notebook flow, condensed for slide readability.
+- Stress H4 because the brief explicitly asks how sensitivity would be proven.
+:::
+
+## Dataset At A Glance
+
+::: {.columns}
+::: {.column width="58%"}
+```{mermaid}
+flowchart LR
+  A[5 s baseline] --> B[30 s relaxation] --> C[5 s break]
+```
+
+```{=html}
+<div class="metric-strip">
+  <div class="metric fragment"><div class="value">10</div><div class="label">trials per subject</div></div>
+  <div class="metric fragment"><div class="value">40 s</div><div class="label">per trial</div></div>
+  <div class="metric fragment"><div class="value">STAI_S / STAI_T</div><div class="label">targets</div></div>
+  <div class="metric fragment"><div class="value">Calibration + metadata</div><div class="label">confounds checked</div></div>
+</div>
+```
+:::
+::: {.column width="42%"}
+### Signals captured
+
+- Pupil diameter 
+- Gaze position 
+- Pulse BPM / PPG quality
+- Motion-derived disturbance
+
+### Key implication
+
+Self-report is informative but noisy, so robustness checks matter more than in a purely performance-labelled setting.
+:::
+:::
+
+::: notes
+- Trial structure: each 40 s trial = 5 s quiet baseline (eyes open, no stimulus) → 30 s VR relaxation content → 5 s recovery break. Features compare the baseline window to the relaxation window.
+- STAI_S = State Anxiety Inventory — how anxious the person feels *right now*. STAI_T = Trait Anxiety Inventory — how anxious they tend to feel *in general*. Both are self-report questionnaires scored 20–80.
+- "Self-report is noisy" means two people with the same physiology can give different scores depending on mood, introspection ability, or survey fatigue — hence why robustness checks matter more here.
+:::
+
+## Pipeline: Data Flow And Lineage
+
+```{mermaid}
+flowchart LR
+  subgraph IN[Inputs]
+    R1[(subjects.csv)]
+    R2[(timeseries.csv)]
+  end
+  subgraph VAL[Validation · validation.py]
+    M[Per-sample masks<br/>pupil · bpm · gaze · motion]
+    Q[Trial quality score<br/>0 / 1 / 2]
+  end
+  subgraph FEAT[Features · features.py]
+    PT[Per-trial features]
+    AGG[Subject aggregation<br/>median + IQR]
+  end
+  subgraph SEL[Selection · selection.py]
+    DC[Redundancy removal]
+    Z[z-score]
+    PCA[PCA + permutation + summaries]
+  end
+  subgraph OUT[Outputs]
+    O1[(trial_scores.parquet)]
+    O2[(features.parquet)]
+    O3[(zscore_params.csv)]
+    O4[(plots + summary CSVs)]
+  end
+  R2 --> M --> Q --> PT --> AGG --> DC --> Z --> PCA
+  R1 --> AGG
+  R1 --> PCA
+  Q -.-> O1
+  AGG -.-> O2
+  Z -.-> O3
+  PCA -.-> O4
+```
+
+::: notes
+- Solid arrows = data transformations (code runs); dotted arrows = files written to disk (artifacts you can inspect or reuse later).
+- Traceability means: given any output plot or CSV, you can trace it back to which raw data file, which code module, and which parameter settings produced it. This is important for debugging and for regulated audits.
+- Parquet is a compressed columnar file format — faster to read than CSV and preserves data types exactly.
+:::
+
+## Pipeline: Code Architecture
+
+```{mermaid}
+flowchart TB
+  subgraph ENTRY[Entry points]
+    M1[main.py]
+    NB[analysis.ipynb]
+    API[Future API wrapper]
+  end
+  subgraph ORCH[Orchestration]
+    P[pipeline.py<br/>run_preprocessing · run_analysis]
+  end
+  subgraph CORE[Core modules]
+    V[validation.py]
+    F[features.py]
+    S[selection.py]
+    PL[plotting.py]
+  end
+  subgraph CFG[Configuration]
+    C[constants.py]
+  end
+  M1 --> P
+  NB -.-> V
+  NB -.-> S
+  NB -.-> PL
+  API -.-> P
+  P --> V & F & S & PL
+  C -.-> V & F & S & PL
+```
+
+::: {.columns}
+::: {.column width="50%"}
+- Orchestration is isolated in `pipeline.py` {.fragment}
+- Thresholds and weights are localised in `constants.py` {.fragment}
+:::
+::: {.column width="50%"}
+- The notebook is an exploration layer, not a separate implementation {.fragment}
+- This keeps CLI, notebook, and future API discussion grounded in the same core modules {.fragment}
+:::
+:::
+
+::: notes
+- CLI (Command-Line Interface) = running `python main.py` from a terminal. The notebook calls the same underlying functions but directly, bypassing `pipeline.py`.
+- Orchestration layer (`pipeline.py`) means a single function call kicks off the entire multi-step workflow in the right order — useful for automation and API wrapping.
+- `constants.py` stores all thresholds and weights in one place so changing a parameter (e.g. the quality cutoff) does not require hunting through multiple files.
+:::
+
+## Validation: Per-Sample Masks
+
+```{=html}
+<div class="card-grid">
+  <div class="card fragment">
+    <h3>Pupil</h3>
+    <p>Non-missing, physiologically plausible (2–8 mm), and within median ± k·MAD.</p>
+  </div>
+  <div class="card fragment">
+    <h3>BPM</h3>
+    <p>PPG sample retained only when signal-quality index exceeds threshold.</p>
+  </div>
+  <div class="card fragment">
+    <h3>Gaze</h3>
+    <p>Non-missing gaze without abrupt velocity jumps, again using a MAD-based rule.</p>
+  </div>
+  <div class="card fragment">
+    <h3>Motion</h3>
+    <p>High motion invalidates all sensors, so the motion mask gates the modality masks.</p>
+  </div>
+</div>
+```
+
+::: {.fragment .callout style="margin-top:16px;"}
+Validation is deliberately conservative: robust statistics first, feature extraction second.
+:::
+
+::: notes
+- MAD = Median Absolute Deviation. It measures spread like standard deviation but is not distorted by extreme outliers. Formula: MAD = median(|x_i − median(x)|). A sample is rejected if it falls more than k×MAD from the median. This is much more stable than mean ± k×std when the signal contains blink artifacts or motion spikes.
+- "Cross-modal contaminant" = high motion corrupts *all* sensors simultaneously (pupil blurs, BPM spikes, gaze jumps), so the motion mask acts as a global gate applied before the per-sensor masks.
+- Modality = type of sensor channel (pupil, BPM, gaze are three separate modalities).
+:::
+
+## Trial Quality Score
+
+::: {.equation-box}
+$$
+q = 0.4 \cdot r_{pupil} + 0.4 \cdot r_{bpm} + 0.2 \cdot r_{gaze}
+$$
+
+where each $r$ is the valid-sample ratio for that modality within a trial.
+:::
+
+```{=html}
+<div class="score-band">
+  <div class="score-poor fragment">score 0<br><span class="small">&lt; 0.6 · excluded</span></div>
+  <div class="score-ok fragment">score 1<br><span class="small">0.6–0.9 · retained</span></div>
+  <div class="score-good fragment">score 2<br><span class="small">≥ 0.9 · retained</span></div>
+</div>
+```
+
+::: notes
+- The quality score q is a weighted average of valid-sample ratios: pupil and BPM get 40% each (primary biomarker channels), gaze gets 20% (useful as an acquisition-quality indicator but not a direct biomarker here).
+- Valid-sample ratio r = (number of unmasked samples) / (total samples in the window). A ratio of 1.0 means every sample passed all masks; 0.0 means every sample was rejected.
+- Score 0 (q < 0.6) = excluded entirely; scores 1 and 2 are both retained for analysis but score 2 trials are used as the highest-confidence subset in sensitivity checks.
+:::
+
+## Quality Outcomes
+
+![](../../output/plots/quality_overview.png){width=100%}
+
+::: {.fragment .footer-note}
+Most trials are retained, but lower-quality data clusters with worse calibration and specific trial/cycle effects.
+:::
+
+::: notes
+- Panel C shows that calibration status (whether the eye-tracker was re-calibrated during the session) correlates with trial quality score. This means quality score differences could partly reflect acquisition conditions, not only the subject's true physiology — which is why candidates are later screened against calibration as a confounder.
+- Confounder = a variable that correlates with both the feature and the target (STAI), creating a spurious association. Calibration and demographics are the main confounders tested here.
+:::
+
+## Raw Signals: Quality In Practice
+
+::: {.columns}
+::: {.column width="68%"}
+![](../../output/plots/raw_signals_quality.png){width=100%}
+:::
+::: {.column width="32%"}
+### What each panel shows
+
+- **High (score 2):** clean pupil trace, low motion throughout {.fragment}
+- **Medium (score 1):** noticeable motion bursts interrupt the signal mid-trial {.fragment}
+- **Low (score 0):** pervasive motion contaminates the pupil channel — trial excluded {.fragment}
+
+::: {.fragment .callout style="margin-top:18px;"}
+Colour = MotionMag (green → calm, red → high). One representative trial highlighted; grey traces are all other trials.
+:::
+:::
+:::
+
+::: notes
+- Three rows = three representative trials: top = quality score 2 (high), middle = score 1 (medium), bottom = score 0 (excluded).
+- RdYlGn_r colour scale: green = low motion magnitude, yellow = moderate, red = high. Motion magnitude is derived from head-tracking position changes.
+- Per-sample masking means we do not discard the entire trial when a few samples are bad — we mask only the contaminated samples and compute features from the remaining clean ones. The trial-level quality score then summarises how many samples survived.
+:::
+
+## Feature Engineering: Per-Trial Physiology
+
+```{=html}
+<div class="card-grid three">
+  <div class="card fragment">
+    <h3>Tonic state</h3>
+    <p>Baseline mean and relax mean capture sustained pupil level, linked to tonic arousal.</p>
+  </div>
+  <div class="card fragment">
+    <h3>Phasic response</h3>
+    <p>Delta and rebound capture how strongly the signal changes and how it recovers.</p>
+  </div>
+  <div class="card fragment">
+    <h3>Temporal dynamics</h3>
+    <p>Nonlinearity and early-vs-late difference capture adaptation across the 30 s relax window.</p>
+  </div>
+</div>
+<div class="card-grid" style="margin-top:20px;">
+  <div class="card fragment">
+    <h3>Variability</h3>
+    <p>Within-trial spread and later subject-level IQR quantify instability, not just level.</p>
+  </div>
+  <div class="card fragment">
+    <h3>Cross-modal coordination</h3>
+    <p>Pupil-BPM and related features were tested, but ultimately did not survive as candidates.</p>
+  </div>
+</div>
+```
+
+::: notes
+- Tonic arousal = slow, sustained baseline level of physiological activation (e.g. resting pupil size). Linked to overall alertness or anxiety level.
+- Phasic response = fast, stimulus-driven change superimposed on the tonic baseline. Pupil dilation during a relaxation stimulus is a phasic response.
+- Delta = (relax mean − baseline mean), normalised by baseline mean → the relative change. A negative delta means the pupil shrank during relaxation, consistent with reduced arousal.
+- Rebound = the pupil level in the last few seconds of the relax window minus the minimum. Captures how much the pupil "bounced back" after its initial dilation response.
+- Nonlinearity and early-vs-late diff both capture whether the pupil response is steady or has a curved/changing trajectory across the 30 s window.
+- All surviving candidates ended up pupil-based; BPM features did not survive robustness checks, likely due to PPG (photoplethysmography = optical pulse sensor) quality being too variable in a VR headset context.
+:::
+
+## From Per-Trial To Per-Subject
+
+::: {.columns}
+::: {.column width="58%"}
+```{mermaid}
+flowchart LR
+  A[Valid trials<br/>per subject] --> B[Per-trial features]
+  B --> C[Median aggregation]
+  B --> D[Trial-to-trial IQR]
+  C --> E[Subject feature set]
+  D --> E
+  E --> F[Redundancy removal + quality join]
+```
+:::
+::: {.column width="42%"}
+### Why this aggregation?
+
+- Median is robust to surviving noisy trials {.fragment}
+- IQR preserves intra-subject variability {.fragment}
+- Redundancy removal happens after aggregation, not before {.fragment}
+:::
+:::
+
+::: notes
+- Aggregation flow: 39 per-trial features × up to 10 valid trials per subject → median and IQR computed per feature per subject → 78 subject-level columns (39 medians + 39 IQRs) → redundancy removal leaves 57.
+- Median aggregation: for each subject we take the median value of a feature across their valid trials. More robust than the mean when one or two trials are borderline quality.
+- IQR (Interquartile Range) = 75th percentile − 25th percentile across trials. Captures how consistent the subject's response was across trials — a high IQR means the feature was unstable trial-to-trial.
+- Redundancy removal: drop features that are near-constant across subjects (no information) or that correlate > 0.9 with another feature (redundant).
+:::
+
+## Selection Funnel
+
+```{mermaid}
+flowchart TD
+  A[78 subject-level columns] --> B[Remove near-constant and highly correlated features]
+  B --> C[Top-10 overlap by Spearman and Pearson]
+  C --> D[Reject quality-driven features]
+  D --> E[Permutation test<br/>1000 shuffles]
+  E --> F[Metadata effect-size screen]
+  F --> G((6 candidates))
+```
+
+::: {.pill-row}
+<div class="pill fragment">Stability</div>
+<div class="pill fragment">Quality independence</div>
+<div class="pill fragment">Permutation significance</div>
+<div class="pill fragment">Metadata robustness</div>
+:::
+
+::: notes
+- Stage 1 — Spearman + Pearson overlap: Spearman tests monotonic rank correlation (robust to outliers and non-normal distributions); Pearson tests linear correlation (sensitive to outliers but has well-understood theory). Requiring a feature to rank top-10 in *both* filters out features that only look good under one assumption.
+- Stage 2 — Quality-driven rejection: remove features whose correlation with STAI could be explained by quality score (i.e. better data → higher feature value → seemingly better STAI association, but it is actually a quality artifact).
+- Stage 3 — Permutation test: shuffle STAI labels 1000 times and recompute the correlation each time. The real correlation must sit above the 99.9th percentile of this null distribution (p ≤ 0.001). This tests whether the observed association could appear by chance.
+- Stage 4 — Metadata effect-size screen: compute how strongly each candidate correlates with age, sex, calibration status, and trial order. Features with large metadata associations are weaker biomarkers because part of their variance is explained by non-physiological factors.
+:::
+
+## Correlation With STAI
+
+::: {.columns}
+::: {.column width="63%"}
+![](../../output/plots/feature_scatter_stai_t.png){width=100%}
+:::
+::: {.column width="37%"}
+### Main takeaways
+
+- Strongest observed single-feature association: `pupil_relative_delta`, $\rho \approx 0.38$ with STAI_T 
+- Trait anxiety aligns most clearly with tonic and recovery-related pupil features 
+- Calibration colouring does not explain away the top effects
+:::
+:::
+
+::: notes
+- ρ (rho) = Spearman rank correlation coefficient. Range −1 to +1. |ρ| ≈ 0.1 = small, |ρ| ≈ 0.3 = moderate, |ρ| ≈ 0.5 = large (Cohen's conventions for behavioural data).
+- A single physiological feature against a self-report questionnaire score rarely exceeds |ρ| ≈ 0.4 in a heterogeneous sample — moderate effects are the expected ceiling, not a limitation of this particular analysis.
+- Calibration colouring: dots are colour-coded by whether the eye-tracker was recalibrated during the session. If the effect disappeared when colouring by calibration, it would suggest the association is an artifact of acquisition quality rather than physiology.
+:::
+
+## Sensitivity Test: Permutation Null
+
+![](../../output/plots/permutation_null_stai_t.png){width=94%}
+
+::: {.fragment .callout}
+All six candidates survive permutation testing at $p \le 0.001$ with 1000 label shuffles.
+:::
+
+::: notes
+- Permutation test logic: if the STAI labels have no real relationship to the features, then randomly shuffling the labels should produce correlations similar to the observed one. Repeating this 1000 times builds an empirical null distribution.
+- p ≤ 0.001 means fewer than 1 in 1000 shuffles produced a correlation as strong as the real one. This is a non-parametric significance test — it does not assume normality or any particular distribution shape.
+- "Fewer assumptions" = unlike a t-test or F-test, the permutation approach makes no assumptions about the distribution of the data; the null distribution is constructed entirely from the actual data.
+:::
+
+## PCA: Structure Of The Feature Space
+
+::: {.columns}
+::: {.column width="10%"}
+![](../../output/plots/pca_colored.png){width=100%}
+:::
+:::
+
+::: {.pill-row}
+<div class="pill fragment">PC1 is clearly quality-dominated</div>
+<div class="pill fragment">PC2 is the most anxiety-aligned component</div>
+<div class="pill fragment">PC2 still carries some calibration/quality association, so the claim stays measured</div>
+:::
+
+::: notes
+- PCA (Principal Component Analysis): a dimensionality-reduction technique that finds uncorrelated directions (principal components, PCs) of maximum variance in the feature space. PC1 explains the most variance, PC2 the next most, and so on.
+- PC1 is quality-dominated = the single largest source of variance across subjects is data quality, not anxiety. This makes sense: subjects with more valid samples will have more stable, extreme feature values.
+- PC2 being anxiety-aligned = after accounting for quality-driven variance in PC1, the next largest pattern of variation across subjects correlates with STAI. This is the useful signal.
+- "Measured claim" = PC2 still carries some quality/calibration association, so it is not a pure anxiety axis. The honest statement is that anxiety is the *dominant non-quality* source of variance.
+:::
+
+## Candidate Biomarkers
+
+![](../../output/plots/candidate_summary.png){width=100%}
+
+::: {.footer-note}
+Six surviving candidates, all pupil-derived, grouped into tonic arousal, phasic response/recovery, and temporal adaptation.
+:::
+
+::: notes
+- Six candidates grouped by physiological theme:
+  - Tonic (sustained level): `pupil_baseline_mean` and `pupil_relax_mean` — higher tonic pupil = higher sympathetic arousal.
+  - Phasic/recovery: `pupil_relative_delta` (how much the pupil changed relative to baseline) and `pupil_rebound` (how much it recovered toward the end of the relax window).
+  - Temporal dynamics: `pupil_nonlinearity` (curvature of the pupil trajectory across 30 s) and `pupil_early_late_diff` (first-half vs second-half mean difference).
+- Rebound interpretation: a more negative `pupil_rebound` in higher-anxiety participants suggests their pupil did not return toward its pre-relaxation level — possibly indicating incomplete parasympathetic engagement.
+- Sympathetic vs parasympathetic: the sympathetic nervous system drives arousal/stress (dilates pupil); the parasympathetic drives rest/relaxation (constricts pupil). Relaxation tasks should shift the balance toward parasympathetic.
+:::
+
+## Robustness Evidence Matrix
+
+```{=html}
+<div class="evidence-grid">
+  <div class="head">Candidate</div>
+  <div class="head">Dual corr.</div>
+  <div class="head">Not quality-driven</div>
+  <div class="head">Perm. p</div>
+  <div class="head">Metadata</div>
+  <div class="head">PCA support</div>
+  <div class="head">Theme</div>
+
+  <div class="cell rowname">pupil_relative_delta</div><div class="cell ok">✓</div><div class="cell ok">✓</div><div class="cell ok">≤ 0.001</div><div class="cell ok">small</div><div class="cell ok">PC2</div><div class="cell ok">phasic</div>
+  <div class="cell rowname">pupil_rebound</div><div class="cell ok">✓</div><div class="cell ok">✓</div><div class="cell ok">≤ 0.001</div><div class="cell ok">small</div><div class="cell ok">PC2/3</div><div class="cell ok">recovery</div>
+  <div class="cell rowname">pupil_early_late_diff</div><div class="cell ok">✓</div><div class="cell ok">✓</div><div class="cell ok">≤ 0.001</div><div class="cell ok">small</div><div class="cell ok">PC2</div><div class="cell ok">dynamics</div>
+  <div class="cell rowname">pupil_nonlinearity</div><div class="cell ok">✓</div><div class="cell ok">✓</div><div class="cell ok">≤ 0.001</div><div class="cell ok">small</div><div class="cell ok">PC2/3</div><div class="cell ok">dynamics</div>
+  <div class="cell rowname">pupil_relax_mean</div><div class="cell ok">✓</div><div class="cell ok">✓</div><div class="cell ok">≤ 0.001</div><div class="cell ok">small</div><div class="cell ok">PC3 + some PC2</div><div class="cell ok">tonic</div>
+  <div class="cell rowname">pupil_baseline_mean</div><div class="cell ok">✓</div><div class="cell ok">✓</div><div class="cell ok">≤ 0.001</div><div class="cell ok">small</div><div class="cell warn">mainly PC3</div><div class="cell ok">tonic</div>
+</div>
+```
+
+::: {.footer-note}
+The point is convergence: no candidate survives because of one statistic alone.
+:::
+
+::: notes
+- Convergent validity: the fact that features identified by univariate correlation (Spearman/Pearson) also load strongly on the anxiety-aligned PCs provides independent corroboration — two different methods point to the same candidates.
+- PC loadings = the weight of each original feature on each principal component. A high loading on PC2 means that feature contributes strongly to the direction of variance most correlated with anxiety.
+- PC2 and PC3 split the anxiety-related variance between them rather than concentrating it all in PC2. `pupil_baseline_mean` loads mainly on PC3 while others load on PC2; both PCs correlate with STAI, so this is still supportive evidence.
+:::
+
+## PCA Loadings: Independent Support
+
+::: {.columns}
+::: {.column width="58%"}
+![](../../output/plots/candidate_loadings.png){width=100%}
+:::
+::: {.column width="42%"}
+### Interpretation
+
+- Univariate candidates also appear in the dominant PCA loading structure {.fragment}
+- Support is spread across PC2 and PC3 rather than one perfectly clean latent factor {.fragment}
+- That is still useful convergence, especially after the quality-dominated PC1 {.fragment}
+:::
+:::
+
+::: notes
+- This closes the loop: PCA is used as corroboration, not as the sole discovery method.
+:::
+
+## How This Could Integrate Into A Backend
+
+::: {.columns}
+::: {.column width="58%"}
+```{mermaid}
+flowchart TD
+  VR[VR Client] --> GW[API Gateway / Auth]
+  GW --> API["FastAPI service\nPOST /preprocess\nPOST /analyze\nGET /jobs/{id}"]
+  API --> Q[Job queue]
+  Q --> W[Worker pool]
+  W --> OS[(Object store)]
+  W --> DB[(Metadata DB)]
+  W --> RES[(Plots / results)]
+```
+:::
+::: {.column width="42%"}
+### Immediate design implications
+
+- `run_preprocessing()` and `run_analysis()` are already separable {.fragment}
+- Input-schema validation should happen before any heavy processing {.fragment}
+- Longer runs should move to async jobs rather than blocking requests {.fragment}
+- Saved z-score parameters support incremental scoring of new cohorts {.fragment}
+:::
+:::
+
+::: notes
+- API Gateway / Auth = the entry point that authenticates requests (e.g. JWT tokens) and rate-limits before they reach the processing service. Keeps security logic separate from business logic.
+- Job queue = instead of the API blocking while a long computation runs, it immediately returns a job ID and queues the work. The client polls `GET /jobs/{id}` for the result. This pattern is called async task processing.
+- Object store = blob storage (e.g. S3, Azure Blob) for large files like raw timeseries or output plots. Cheaper and more scalable than storing binary data in a relational database.
+- Saved z-score parameters (`zscore_params.csv`): when scoring a new subject, you apply the mean and std computed from the *training cohort* rather than re-computing from scratch — this ensures new subjects are scored on the same scale.
+:::
+
+## Scaling, Regulated SDLC, And Next Steps
+
+::: {.columns}
+::: {.column width="50%"}
+```{mermaid}
+flowchart LR
+  R[Researcher] --> B[Feature branch]
+  B --> PR[PR]
+  PR --> RV["Reviewer\nreview + sign-off"]
+  RV --> V["Validation\nlocked-dataset rerun + report"]
+  V --> REL["Release\ntagged + frozen artifacts"]
+  REL --> PROD["Production\napproved deployment"]
+```
+
+### Regulated-process principles
+
+- Pinned dependencies and reproducible environment setup {.fragment}
+- Protected main branch and tagged releases {.fragment}
+- Traceability to commit, parameter snapshot, and dataset version {.fragment}
+:::
+::: {.column width="50%"}
+### Limitations and next steps
+
+- Moderate single-feature effect sizes are expected for self-report targets {.fragment}
+- BPM features likely suffered from motion-sensitive VR PPG quality {.fragment}
+- No predictive model or nested CV in this assignment {.fragment}
+- Next: multivariate model, bootstrap CIs, habituation modelling, better PPG denoising {.fragment}
+:::
+:::
+
+::: notes
+- Regulated SDLC terms: Feature branch = isolated code branch for one change. PR (Pull Request) = formal request to merge a branch, triggering review. Sign-off = explicit approval from a second person before merging. Locked-dataset rerun = re-executing the full analysis on a fixed, versioned dataset to confirm results did not change. Tagged release = a Git version tag (e.g. v1.2.0) that permanently identifies which code produced which outputs.
+- Bootstrap CIs = Bootstrap Confidence Intervals: repeatedly resample the data with replacement (e.g. 10,000 times) and recompute the statistic each time to get a distribution of plausible values. More honest than a single point estimate.
+- Habituation modelling = accounting for the fact that subjects may respond differently to trial 1 vs trial 10 as they habituate to the VR environment — a within-session learning/adaptation effect.
+- Nested CV = Nested Cross-Validation: an unbiased way to evaluate predictive model performance when you also need to tune hyperparameters. The outer loop estimates generalisation; the inner loop selects parameters.
+:::
+
+## Closing
+
+::: {.hero-band}
+The main result is not just six pupil-based candidates. It is a workflow that moves from noisy VR signals to interpretable, robustness-checked biomarkers in a way that can realistically evolve toward product and regulated-process discussions.
+:::
+
+::: {.pill-row}
+<div class="pill fragment">Validation before modeling</div>
+<div class="pill fragment">Interpretability before complexity</div>
+<div class="pill fragment">Robustness before deployment claims</div>
+:::
+
+::: notes
+- Three natural question areas to invite:
+  1. Physiology: why pupil? why these specific features? what would BPM add with better signal quality?
+  2. Methodology: why permutation over a classical t-test? how were the redundancy thresholds chosen? what would a predictive model look like?
+  3. Engineering / product: how would this run in production? what does a regulated submission require? how would you version the z-score parameters across cohorts?
+:::
