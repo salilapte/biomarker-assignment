@@ -13,7 +13,7 @@ format:
     height: 800
     margin: 0.04
     fig-align: center
-    embed-resources: true
+    embed-resources: false
     toc: false
     progress: true
     history: false
@@ -21,9 +21,6 @@ format:
     controls-layout: edges
     smaller: false
     css: slides-styles.css
-include-in-header:
-  text: |
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 ---
 
 
@@ -35,10 +32,10 @@ Can a 40-second VR trial produce pupil signals reliable enough to use as biomark
 :::
 
 ::: {.pill-row}
-<div class="pill fragment">Signal validation before inference</div>
-<div class="pill fragment">Features grounded in physiology</div>
-<div class="pill fragment">Robustness beyond a single p-value</div>
-<div class="pill fragment">Pipeline ready for backend use</div>
+<div class="pill fragment"><i class="fa-solid fa-filter"></i> Signal validation before inference</div>
+<div class="pill fragment"><i class="fa-solid fa-wave-square"></i> Features grounded in physiology</div>
+<div class="pill fragment"><i class="fa-solid fa-shield-halved"></i> Robustness beyond a single p-value</div>
+<div class="pill fragment"><i class="fa-solid fa-plug"></i> Pipeline ready for backend use</div>
 :::
 
 ::: notes
@@ -51,27 +48,27 @@ Can a 40-second VR trial produce pupil signals reliable enough to use as biomark
 ```{=html}
 <div class="card-grid">
   <div class="card fragment">
-    <h3>H1 · Task response</h3>
+    <h3><i class="fa-solid fa-flask"></i> H1 · Task response</h3>
     <p>Physiological signals should change systematically from baseline to relaxation.</p>
   </div>
   <div class="card fragment">
-    <h3>H2 · Relative features</h3>
+    <h3><i class="fa-solid fa-ruler"></i> H2 · Relative features</h3>
     <p>Baseline-normalised features should capture the task better than raw levels alone.</p>
   </div>
   <div class="card fragment">
-    <h3>H3 · Anxiety linkage</h3>
+    <h3><i class="fa-solid fa-link"></i> H3 · Anxiety linkage</h3>
     <p>Pupil, heart-rate, and gaze-derived features should relate to STAI_S and STAI_T.</p>
   </div>
   <div class="card fragment">
-    <h3>H4 · Sensitivity and specificity</h3>
+    <h3><i class="fa-solid fa-shield-halved"></i> H4 · Sensitivity and specificity</h3>
     <p>Good biomarkers should survive quality/confound checks rather than only correlate once.</p>
   </div>
   <div class="card fragment">
-    <h3>H5 · Metadata confounds</h3>
+    <h3><i class="fa-solid fa-tags"></i> H5 · Metadata confounds</h3>
     <p>Features strongly driven by demographics or acquisition context are weaker candidates.</p>
   </div>
   <div class="card fragment">
-    <h3>Focus</h3>
+    <h3><i class="fa-solid fa-bullseye"></i> Focus</h3>
     <p>The heavy methodological effort goes into H4: demonstrating robustness, not only ranking features.</p>
   </div>
 </div>
@@ -135,36 +132,48 @@ Self-report STAI is the target. Subjective targets demand harder robustness chec
 ```{=html}
 <div class="flow-grid">
   <div class="flow-node fn-io">
-    <div class="fn-title">Inputs</div>
+    <div class="fn-title"><i class="fa-solid fa-file-csv"></i> Inputs</div>
     <div class="fn-sub">subjects.csv<br>timeseries.csv</div>
   </div>
   <div class="flow-arrow">&#8594;</div>
   <div class="flow-node">
-    <div class="fn-title">Validation</div>
+    <div class="fn-title"><i class="fa-solid fa-filter"></i> Validation</div>
     <div class="fn-sub">per-sample masks<br>trial quality 0/1/2</div>
   </div>
   <div class="flow-arrow">&#8594;</div>
   <div class="flow-node">
-    <div class="fn-title">Features</div>
+    <div class="fn-title"><i class="fa-solid fa-wave-square"></i> Features</div>
     <div class="fn-sub">per-trial extraction<br>subject aggregation</div>
   </div>
   <div class="flow-arrow">&#8594;</div>
   <div class="flow-node">
-    <div class="fn-title">Selection</div>
+    <div class="fn-title"><i class="fa-solid fa-magnifying-glass-chart"></i> Selection</div>
     <div class="fn-sub">redundancy removal<br>z-score · PCA</div>
   </div>
   <div class="flow-arrow">&#8594;</div>
   <div class="flow-node fn-io">
-    <div class="fn-title">Outputs</div>
+    <div class="fn-title"><i class="fa-solid fa-box-archive"></i> Outputs</div>
     <div class="fn-sub">parquet · CSV<br>plots · summaries</div>
   </div>
 </div>
 ```
 
+::: {.callout style="margin-top:18px; font-size:0.82em;"}
+**Intermediate caching:** the `Features` step writes `per_trial_feature_catalog.parquet` to disk — Selection, PCA, and permutation tests re-run in seconds without re-processing validation.
+:::
+
+::: {.pill-row style="margin-top:10px;"}
+<div class="pill">~2M rows → 500 subjects</div>
+<div class="pill">Single-core</div>
+<div class="pill">&lt; 2 GB RAM</div>
+<div class="pill">Zero GPU deps</div>
+:::
+
 ::: notes
-- Solid arrows = data transformations (code runs); dotted arrows = files written to disk (artifacts you can inspect or reuse later).
-- Traceability means: given any output plot or CSV, you can trace it back to which raw data file, which code module, and which parameter settings produced it. This is important for debugging and for regulated audits.
+- Solid arrows = data transformations (code runs); artifacts written to disk are checkpoints you can inspect or reuse.
+- Intermediate caching: per_trial_feature_catalog.parquet is written after feature extraction. This decouples the slow signal-validation step from the fast statistical selection steps, enabling rapid iteration on thresholds and methods.
 - Parquet is a compressed columnar file format — faster to read than CSV and preserves data types exactly.
+- Compute footprint: the full pipeline processes ~2M time-series rows down to 500 subject-level vectors on a single core in under 2 minutes, using only pandas, scipy, and scikit-learn.
 :::
 
 ## Validation: Per-Sample Masks
@@ -172,19 +181,19 @@ Self-report STAI is the target. Subjective targets demand harder robustness chec
 ```{=html}
 <div class="card-grid">
   <div class="card fragment">
-    <h3>Pupil</h3>
+    <h3><i class="fa-solid fa-eye"></i> Pupil</h3>
     <p>Non-missing, physiologically plausible (2–8 mm), and within median ± k·MAD.</p>
   </div>
   <div class="card fragment">
-    <h3>BPM</h3>
+    <h3><i class="fa-solid fa-heart-pulse"></i> BPM</h3>
     <p>PPG sample retained only when signal-quality index exceeds threshold.</p>
   </div>
   <div class="card fragment">
-    <h3>Gaze</h3>
+    <h3><i class="fa-solid fa-location-crosshairs"></i> Gaze</h3>
     <p>Non-missing gaze without abrupt velocity jumps, again using a MAD-based rule.</p>
   </div>
   <div class="card fragment">
-    <h3>Motion</h3>
+    <h3><i class="fa-solid fa-person-running"></i> Motion</h3>
     <p>High motion invalidates all sensors, so the motion mask gates the modality masks.</p>
   </div>
 </div>
@@ -267,25 +276,25 @@ Colour = MotionMag (green → calm, red → high). One representative trial high
 ```{=html}
 <div class="card-grid three">
   <div class="card fragment">
-    <h3>Tonic state</h3>
+    <h3><i class="fa-solid fa-battery-half"></i> Tonic state</h3>
     <p>Baseline mean and relax mean capture sustained pupil level, linked to tonic arousal.</p>
   </div>
   <div class="card fragment">
-    <h3>Phasic response</h3>
+    <h3><i class="fa-solid fa-bolt"></i> Phasic response</h3>
     <p>Delta and rebound capture how strongly the signal changes and how it recovers.</p>
   </div>
   <div class="card fragment">
-    <h3>Temporal dynamics</h3>
+    <h3><i class="fa-solid fa-chart-line"></i> Temporal dynamics</h3>
     <p>Nonlinearity and early-vs-late difference capture adaptation across the 30 s relax window.</p>
   </div>
 </div>
 <div class="card-grid" style="margin-top:20px;">
   <div class="card fragment">
-    <h3>Variability</h3>
+    <h3><i class="fa-solid fa-wave-square"></i> Variability</h3>
     <p>Within-trial spread and later subject-level IQR quantify instability, not just level.</p>
   </div>
   <div class="card fragment">
-    <h3>Cross-modal coordination</h3>
+    <h3><i class="fa-solid fa-link-slash"></i> Cross-modal coordination</h3>
     <p>Pupil-BPM and related features were tested, but ultimately did not survive as candidates.</p>
   </div>
 </div>
@@ -537,7 +546,7 @@ Intentionally lightweight: pandas, scipy, scikit-learn — no deep-learning depe
 <div class="flow-step fragment">
   <div class="fs-num">1</div>
   <div class="fs-body">
-    <div class="fs-title">Ingestion</div>
+    <div class="fs-title"><i class="fa-solid fa-cloud-arrow-up"></i> Ingestion</div>
     <div class="fs-detail">POST /ingest-session — schema-validated upload from VR client</div>
     <div class="fs-tools"><span class="tool-tag">FastAPI</span><span class="tool-tag">Pydantic</span><span class="tool-tag">JWT auth</span></div>
   </div>
@@ -546,7 +555,7 @@ Intentionally lightweight: pandas, scipy, scikit-learn — no deep-learning depe
 <div class="flow-step fragment">
   <div class="fs-num">2</div>
   <div class="fs-body">
-    <div class="fs-title">Storage</div>
+    <div class="fs-title"><i class="fa-solid fa-database"></i> Storage</div>
     <div class="fs-detail">Raw timeseries, subject metadata, processing logs</div>
     <div class="fs-tools"><span class="tool-tag">S3</span><span class="tool-tag">PostgreSQL</span><span class="tool-tag">Parquet</span></div>
   </div>
@@ -555,7 +564,7 @@ Intentionally lightweight: pandas, scipy, scikit-learn — no deep-learning depe
 <div class="flow-step fragment">
   <div class="fs-num">3</div>
   <div class="fs-body">
-    <div class="fs-title">Async processing</div>
+    <div class="fs-title"><i class="fa-solid fa-gears"></i> Async processing</div>
     <div class="fs-detail">Job queue → worker calls run_preprocessing(): validate → score trials → features → aggregate</div>
     <div class="fs-tools"><span class="tool-tag">Celery / RQ</span><span class="tool-tag">Redis</span><span class="tool-tag">src/pipeline.py</span></div>
   </div>
@@ -565,7 +574,7 @@ Intentionally lightweight: pandas, scipy, scikit-learn — no deep-learning depe
 <div class="flow-step fragment">
   <div class="fs-num">4</div>
   <div class="fs-body">
-    <div class="fs-title">Analysis &amp; scoring</div>
+    <div class="fs-title"><i class="fa-solid fa-chart-bar"></i> Analysis &amp; scoring</div>
     <div class="fs-detail">run_analysis() applies frozen z-score parameters from training cohort</div>
     <div class="fs-tools"><span class="tool-tag">zscore_params.csv</span><span class="tool-tag">scikit-learn</span><span class="tool-tag">feature store</span></div>
   </div>
@@ -574,7 +583,7 @@ Intentionally lightweight: pandas, scipy, scikit-learn — no deep-learning depe
 <div class="flow-step fragment">
   <div class="fs-num">5</div>
   <div class="fs-body">
-    <div class="fs-title">Serving</div>
+    <div class="fs-title"><i class="fa-solid fa-server"></i> Serving</div>
     <div class="fs-detail">GET /subject-features/{id} · GET /quality-report/{id}</div>
     <div class="fs-tools"><span class="tool-tag">FastAPI</span><span class="tool-tag">cached results</span></div>
   </div>
@@ -583,7 +592,7 @@ Intentionally lightweight: pandas, scipy, scikit-learn — no deep-learning depe
 <div class="flow-step fragment">
   <div class="fs-num">6</div>
   <div class="fs-body">
-    <div class="fs-title">Monitoring</div>
+    <div class="fs-title"><i class="fa-solid fa-bell"></i> Monitoring</div>
     <div class="fs-detail">Signal-quality drift, feature drift, failure rate by device cohort</div>
     <div class="fs-tools"><span class="tool-tag">Prometheus</span><span class="tool-tag">Grafana</span><span class="tool-tag">alerts</span></div>
   </div>
@@ -608,12 +617,12 @@ Intentionally lightweight: pandas, scipy, scikit-learn — no deep-learning depe
 
 ```{=html}
 <div class="process-strip">
-  <div class="process-cell"><div class="pc-num">1</div><div class="pc-title">Develop</div><div class="pc-detail">feature branch<br>MLflow tracking<br>DVC dataset version</div></div>
-  <div class="process-cell"><div class="pc-num">2</div><div class="pc-title">Pre-freeze</div><div class="pc-detail">CI: unit + schema tests<br>baseline output diff</div></div>
-  <div class="process-cell"><div class="pc-num">3</div><div class="pc-title">Freeze</div><div class="pc-detail">release branch<br>pin deps<br>lock feature defs</div></div>
-  <div class="process-cell"><div class="pc-num">4</div><div class="pc-title">Validate</div><div class="pc-detail">locked-dataset rerun<br>sign-off in QMS</div></div>
-  <div class="process-cell"><div class="pc-num">5</div><div class="pc-title">Release</div><div class="pc-detail">tagged version<br>artifact bundle hash</div></div>
-  <div class="process-cell" style="background:var(--accent-soft);"><div class="pc-num">6</div><div class="pc-title">Post-freeze</div><div class="pc-detail">version bump<br>full re-validation<br>past versions reproducible</div></div>
+  <div class="process-cell"><div class="pc-num">1</div><div class="pc-title"><i class="fa-solid fa-code-branch"></i> Develop</div><div class="pc-detail">feature branch<br>MLflow tracking<br>DVC dataset version</div></div>
+  <div class="process-cell"><div class="pc-num">2</div><div class="pc-title"><i class="fa-solid fa-vial-circle-check"></i> Pre-freeze</div><div class="pc-detail">CI: unit + schema tests<br>baseline output diff</div></div>
+  <div class="process-cell"><div class="pc-num">3</div><div class="pc-title"><i class="fa-solid fa-snowflake"></i> Freeze</div><div class="pc-detail">release branch<br>pin deps<br>lock feature defs</div></div>
+  <div class="process-cell"><div class="pc-num">4</div><div class="pc-title"><i class="fa-solid fa-clipboard-check"></i> Validate</div><div class="pc-detail">locked-dataset rerun<br>sign-off in QMS</div></div>
+  <div class="process-cell"><div class="pc-num">5</div><div class="pc-title"><i class="fa-solid fa-rocket"></i> Release</div><div class="pc-detail">tagged version<br>artifact bundle hash</div></div>
+  <div class="process-cell" style="background:var(--accent-soft);"><div class="pc-num">6</div><div class="pc-title"><i class="fa-solid fa-rotate"></i> Post-freeze</div><div class="pc-detail">version bump<br>full re-validation<br>past versions reproducible</div></div>
 </div>
 ```
 
@@ -684,27 +693,27 @@ New data improves the system through controlled reprocessing and versioned model
 ```{=html}
 <div class="card-grid">
   <div class="card fragment">
-    <h3>Effect-size ceiling</h3>
+    <h3><i class="fa-solid fa-chart-pie"></i> Effect-size ceiling</h3>
     <p>Single-feature ρ ≈ 0.4 against a self-report target is at the upper end of what is typical. Honest scope, not a flaw to fix.</p>
   </div>
   <div class="card fragment">
-    <h3>BPM under-delivered</h3>
+    <h3><i class="fa-solid fa-heart-crack"></i> BPM under-delivered</h3>
     <p>VR PPG is motion-sensitive; cardiac features did not survive robustness checks. Better optical placement or ECG would change this.</p>
   </div>
   <div class="card fragment">
-    <h3>No predictive model yet</h3>
+    <h3><i class="fa-solid fa-brain"></i> No predictive model yet</h3>
     <p>Next step: elastic-net regression with nested cross-validation to build a parsimonious multivariate index and honest generalisation estimates.</p>
   </div>
   <div class="card fragment">
-    <h3>Habituation unmodelled</h3>
+    <h3><i class="fa-solid fa-arrow-trend-down"></i> Habituation unmodelled</h3>
     <p>Trial 1 differs from trial 10 as subjects acclimate. A mixed-effects model with trial index would isolate this variance.</p>
   </div>
   <div class="card fragment">
-    <h3>Responder subtypes unexplored</h3>
+    <h3><i class="fa-solid fa-users-viewfinder"></i> Responder subtypes unexplored</h3>
     <p>Density-based clustering (HDBSCAN) or hierarchical clustering could reveal physiological responder subtypes without forcing artificial partitions on a continuous distribution.</p>
   </div>
   <div class="card fragment">
-    <h3>Cross-cohort validation</h3>
+    <h3><i class="fa-solid fa-arrow-right-arrow-left"></i> Cross-cohort validation</h3>
     <p>The frozen z-score params are designed for incremental scoring. They need a held-out cohort to confirm generalisation.</p>
   </div>
 </div>
@@ -725,9 +734,9 @@ Six validated pupil biomarkers. A pipeline that is already separable, traceable,
 :::
 
 ::: {.pill-row}
-<div class="pill fragment">Validate first</div>
-<div class="pill fragment">Stay interpretable</div>
-<div class="pill fragment">Earn the claim</div>
+<div class="pill fragment"><i class="fa-solid fa-check-double"></i> Validate first</div>
+<div class="pill fragment"><i class="fa-solid fa-magnifying-glass"></i> Stay interpretable</div>
+<div class="pill fragment"><i class="fa-solid fa-award"></i> Earn the claim</div>
 :::
 
 ::: {.fragment style="margin-top:18px; font-size:0.75em; color:var(--muted, #6b7a8d); text-align:center;"}
