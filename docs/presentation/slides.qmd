@@ -21,6 +21,9 @@ format:
     controls-layout: edges
     smaller: false
     css: slides-styles.css
+include-in-header:
+  text: |
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 ---
 
 
@@ -95,10 +98,11 @@ Can a 40-second VR trial produce pupil signals reliable enough to use as biomark
 
 ```{=html}
 <div class="metric-strip">
+  <div class="metric fragment"><div class="value">500</div><div class="label">subjects</div></div>
   <div class="metric fragment"><div class="value">10</div><div class="label">trials per subject</div></div>
   <div class="metric fragment"><div class="value">40 s</div><div class="label">per trial</div></div>
-  <div class="metric fragment"><div class="value">STAI_S / STAI_T</div><div class="label">targets</div></div>
-  <div class="metric fragment"><div class="value">Calibration + metadata</div><div class="label">confounds checked</div></div>
+  <div class="metric fragment"><div class="value">STAI</div><div class="label">targets</div></div>
+  <div class="metric fragment"><div class="value">5</div><div class="label">confounds checked</div></div>
 </div>
 ```
 :::
@@ -112,6 +116,10 @@ Can a 40-second VR trial produce pupil signals reliable enough to use as biomark
 
 ::: {.callout style="margin-top:14px;"}
 Self-report STAI is the target. Subjective targets demand harder robustness checks than performance labels would.
+:::
+
+::: {.callout-note style="margin-top:8px; font-size:0.82em;"}
+**Key assumption:** controlled lab lighting means pupil changes are driven by autonomic state, not ambient illuminance. Score-0 trials are dropped rather than imputed — conservative by design.
 :::
 :::
 :::
@@ -159,40 +167,6 @@ Self-report STAI is the target. Subjective targets demand harder robustness chec
 - Parquet is a compressed columnar file format — faster to read than CSV and preserves data types exactly.
 :::
 
-## Pipeline: Code Architecture
-
-```{=html}
-<div style="display:grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap:10px; align-items:center; font-size:0.6em; margin:10px 0;">
-  <div>
-    <div style="font-weight:700; color:var(--accent); margin-bottom:6px;">Entry points</div>
-    <div class="pipeline-step"><span class="step-label">main.py</span><span class="step-detail">— CLI</span></div>
-    <div class="pipeline-step"><span class="step-label">analysis.ipynb</span><span class="step-detail">— exploration</span></div>
-    <div class="pipeline-step"><span class="step-label">FastAPI wrapper</span><span class="step-detail">— future</span></div>
-  </div>
-  <div style="text-align:center; color:var(--accent); font-size:1.4em;">&#8594;</div>
-  <div>
-    <div style="font-weight:700; color:var(--accent); margin-bottom:6px;">Orchestration</div>
-    <div class="pipeline-step"><span class="step-label">pipeline.py</span><span class="step-detail">— run_preprocessing / run_analysis</span></div>
-    <div style="margin-top:10px; font-weight:700; color:var(--accent); margin-bottom:6px;">Configuration</div>
-    <div class="pipeline-step"><span class="step-label">constants.py</span><span class="step-detail">— thresholds, weights</span></div>
-  </div>
-  <div style="text-align:center; color:var(--accent); font-size:1.4em;">&#8594;</div>
-  <div>
-    <div style="font-weight:700; color:var(--accent); margin-bottom:6px;">Core modules</div>
-    <div class="pipeline-step"><span class="step-label">validation.py</span></div>
-    <div class="pipeline-step"><span class="step-label">features.py</span></div>
-    <div class="pipeline-step"><span class="step-label">selection.py</span></div>
-    <div class="pipeline-step"><span class="step-label">plotting.py</span></div>
-  </div>
-</div>
-```
-
-::: notes
-- CLI and notebook share the same core modules; the notebook bypasses `pipeline.py` for finer control during exploration.
-- A FastAPI wrapper is a thin layer over `pipeline.py`, not a rewrite — this is what makes the backend conversation credible.
-- `constants.py` localises thresholds and weights, so re-tuning a parameter does not require hunting through modules.
-:::
-
 ## Validation: Per-Sample Masks
 
 ```{=html}
@@ -238,9 +212,9 @@ where each $r$ is the valid-sample ratio for that modality within a trial.
 
 ```{=html}
 <div class="score-band">
-  <div class="score-poor fragment">score 0<br><span class="small">&lt; 0.6 · excluded</span></div>
-  <div class="score-ok fragment">score 1<br><span class="small">0.6–0.9 · retained</span></div>
-  <div class="score-good fragment">score 2<br><span class="small">≥ 0.9 · retained</span></div>
+  <div class="score-poor fragment">score 0<br><span class="small">&lt; 0.6 &middot; <strong>313 excluded</strong></span></div>
+  <div class="score-ok fragment">score 1<br><span class="small">0.6–0.9 &middot; retained</span></div>
+  <div class="score-good fragment">score 2<br><span class="small">&#8805; 0.9 &middot; <strong>4,687 valid total</strong></span></div>
 </div>
 ```
 
@@ -380,7 +354,7 @@ Colour = MotionMag (green → calm, red → high). One representative trial high
   <div class="pipeline-arrow">&#8595;</div>
   <div class="pipeline-step"><span class="step-num">5</span><span class="step-label">Permutation test</span><span class="step-detail">&nbsp;— 1000 label shuffles, p ≤ 0.001</span></div>
   <div class="pipeline-arrow">&#8595;</div>
-  <div class="pipeline-step"><span class="step-num">6</span><span class="step-label">Metadata effect-size screen</span><span class="step-detail">&nbsp;— age, sex, calibration, trial order</span></div>
+  <div class="pipeline-step"><span class="step-num">6</span><span class="step-label">Metadata effect-size screen</span><span class="step-detail">&nbsp;— Gender, WearsGlasses, Handedness, BloodType, CalibrationError</span></div>
   <div class="pipeline-arrow">&#8595;</div>
   <div class="pipeline-step" style="background: var(--accent-soft); border-color: rgba(27,107,115,0.3); font-weight:700;"><span class="step-label" style="color:var(--accent);">6 candidate biomarkers</span></div>
 </div>
@@ -394,7 +368,7 @@ Each stage rejects a different failure mode — not a re-test of the same effect
 - Stage 1 — Spearman + Pearson overlap: Spearman tests monotonic rank correlation (robust to outliers and non-normal distributions); Pearson tests linear correlation (sensitive to outliers but has well-understood theory). Requiring a feature to rank top-10 in *both* filters out features that only look good under one assumption.
 - Stage 2 — Quality-driven rejection: remove features whose correlation with STAI could be explained by quality score (i.e. better data → higher feature value → seemingly better STAI association, but it is actually a quality artifact).
 - Stage 3 — Permutation test: shuffle STAI labels 1000 times and recompute the correlation each time. The real correlation must sit above the 99.9th percentile of this null distribution (p ≤ 0.001). This tests whether the observed association could appear by chance.
-- Stage 4 — Metadata effect-size screen: compute how strongly each candidate correlates with age, sex, calibration status, and trial order. Features with large metadata associations are weaker biomarkers because part of their variance is explained by non-physiological factors.
+- Stage 4 — Metadata effect-size screen: five variables tested — Gender, WearsGlasses, Handedness, BloodType, CalibrationError. Features that correlate strongly with any of these are weaker candidates because part of their variance is explained by demographics or acquisition artefacts rather than physiology.
 :::
 
 ## Correlation With STAI
@@ -514,6 +488,45 @@ The point is convergence: no candidate survives because of one statistic alone.
 - PCA serves as corroboration here, not as the discovery method
 :::
 :::
+:::
+
+## Pipeline: Code Architecture
+
+```{=html}
+<div style="display:grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap:10px; align-items:center; font-size:0.6em; margin:10px 0;">
+  <div>
+    <div style="font-weight:700; color:var(--accent); margin-bottom:6px;">Entry points</div>
+    <div class="pipeline-step"><span class="step-label">main.py</span><span class="step-detail">— CLI</span></div>
+    <div class="pipeline-step"><span class="step-label">analysis.ipynb</span><span class="step-detail">— exploration</span></div>
+    <div class="pipeline-step"><span class="step-label">FastAPI wrapper</span><span class="step-detail">— future</span></div>
+  </div>
+  <div style="text-align:center; color:var(--accent); font-size:1.4em;">&#8594;</div>
+  <div>
+    <div style="font-weight:700; color:var(--accent); margin-bottom:6px;">Orchestration</div>
+    <div class="pipeline-step"><span class="step-label">pipeline.py</span><span class="step-detail">— run_preprocessing / run_analysis</span></div>
+    <div style="margin-top:10px; font-weight:700; color:var(--accent); margin-bottom:6px;">Configuration</div>
+    <div class="pipeline-step"><span class="step-label">constants.py</span><span class="step-detail">— thresholds, weights</span></div>
+  </div>
+  <div style="text-align:center; color:var(--accent); font-size:1.4em;">&#8594;</div>
+  <div>
+    <div style="font-weight:700; color:var(--accent); margin-bottom:6px;">Core modules</div>
+    <div class="pipeline-step"><span class="step-label">validation.py</span></div>
+    <div class="pipeline-step"><span class="step-label">features.py</span></div>
+    <div class="pipeline-step"><span class="step-label">selection.py</span></div>
+    <div class="pipeline-step"><span class="step-label">plotting.py</span></div>
+  </div>
+</div>
+```
+
+::: {.fragment .callout style="margin-top:14px;"}
+Intentionally lightweight: pandas, scipy, scikit-learn — no deep-learning dependencies. The pipeline is auditable, portable, and easy to freeze for regulated release.
+:::
+
+::: notes
+- CLI and notebook share the same core modules; the notebook bypasses `pipeline.py` for finer control during exploration.
+- A FastAPI wrapper is a thin layer over `pipeline.py`, not a rewrite — this is what makes the backend conversation credible.
+- `constants.py` localises thresholds and weights, so re-tuning a parameter does not require hunting through modules.
+- Deliberately avoiding heavy ML frameworks keeps the dependency surface small — important for regulated products where every dependency must be validated and pinned.
 :::
 
 ## Production Architecture
@@ -680,27 +693,29 @@ New data improves the system through controlled reprocessing and versioned model
   </div>
   <div class="card fragment">
     <h3>No predictive model yet</h3>
-    <p>This work stops at validated candidates. A multivariate model with nested cross-validation is the natural next step.</p>
+    <p>Next step: elastic-net regression with nested cross-validation to build a parsimonious multivariate index and honest generalisation estimates.</p>
   </div>
   <div class="card fragment">
     <h3>Habituation unmodelled</h3>
-    <p>Trial 1 differs from trial 10 as subjects acclimate. A mixed-effects model with trial index would partition this variance.</p>
+    <p>Trial 1 differs from trial 10 as subjects acclimate. A mixed-effects model with trial index would isolate this variance.</p>
   </div>
   <div class="card fragment">
-    <h3>Bootstrap CIs</h3>
-    <p>Point estimates only; resampled confidence intervals would communicate uncertainty more honestly to non-statisticians.</p>
+    <h3>Responder subtypes unexplored</h3>
+    <p>Density-based clustering (HDBSCAN) or hierarchical clustering could reveal physiological responder subtypes without forcing artificial partitions on a continuous distribution.</p>
   </div>
   <div class="card fragment">
     <h3>Cross-cohort validation</h3>
-    <p>The frozen z-score params are designed for incremental scoring. They need a held-out cohort to confirm they actually generalise.</p>
+    <p>The frozen z-score params are designed for incremental scoring. They need a held-out cohort to confirm generalisation.</p>
   </div>
 </div>
 ```
 
 ::: notes
 - Frame the limitations as scope choices, not failures. The audience will respect honesty about ceiling effects more than oversold claims.
-- Habituation modelling is the most concrete methodological next step — mixed-effects with trial index would change the picture for tonic features.
-- Cross-cohort validation is the gating item before any clinical or product claim. Until then, the candidates are exploratory.
+- Elastic-net + nested CV: elastic-net combines L1 (feature selection) and L2 (shrinkage) penalties for a parsimonious model; nested CV ensures the performance estimate is not contaminated by the hyperparameter search.
+- HDBSCAN is preferred over K-Means or UMAP because it does not force a fixed number of clusters and handles noise natively — important for a continuous physiological distribution where artificial partitioning would be misleading.
+- Habituation modelling is the most concrete next methodological step; mixed-effects with trial index would change the picture for tonic features that drift across the session.
+- Cross-cohort validation is the gating item before any clinical or product claim.
 :::
 
 ## Closing
@@ -713,6 +728,10 @@ Six validated pupil biomarkers. A pipeline that is already separable, traceable,
 <div class="pill fragment">Validate first</div>
 <div class="pill fragment">Stay interpretable</div>
 <div class="pill fragment">Earn the claim</div>
+:::
+
+::: {.fragment style="margin-top:18px; font-size:0.75em; color:var(--muted, #6b7a8d); text-align:center;"}
+Time allocation &nbsp;·&nbsp; 1.5 h pipeline &nbsp;·&nbsp; 1 h features &nbsp;·&nbsp; 1 h PCA & selection &nbsp;·&nbsp; 1 h report &nbsp;=&nbsp; **4.5 h total**
 :::
 
 ::: notes
