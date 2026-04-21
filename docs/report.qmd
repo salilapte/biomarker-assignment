@@ -42,7 +42,7 @@ Six candidate biomarkers survived, all pupil-derived. The figure below shows the
 The candidates group into three physiological themes:
 
 - Tonic arousal: baseline pupil size (`pupil_baseline_mean`) and mean pupil size during relaxation (`pupil_relax_mean`) reflect resting pupil size driven by the locus coeruleus–norepinephrine (LC-NE) pathway; higher trait anxiety corresponds to a larger tonic pupil (Joshi et al., 2016).
-- Phasic response: relative pupil change (`pupil_relative_delta`, strongest, ρ = 0.38 with STAI_T) and pupil relaxation slope (`pupil_relax_slope`) capture the magnitude and rate of sympathetic withdrawal during relaxation.
+- Phasic response and recovery: relative pupil change (`pupil_relative_delta`, strongest, ρ = 0.38 with STAI_T) and pupil rebound (`pupil_rebound`) capture both the magnitude of the relaxation-linked pupil response and the extent to which pupil diameter returns toward baseline afterward; the negative association of rebound with STAI suggests slower or less complete recovery after the relaxation window in higher-anxiety participants.
 - Temporal dynamics: pupil adaptation nonlinearity (`pupil_nonlinearity`) and early-vs-late pupil difference (`pupil_early_late_diff`) reflect competing autonomic drives producing adaptation over the 30 s relaxation window.
 
 PCA confirmed this: PC1 (23 %) captured data-quality variation; PC2 (10 %) formed the anxiety-related axis on which all six candidates load. Pupil features dominate over heart rate, likely because PPG-based BPM in VR suffers from motion artefacts.
