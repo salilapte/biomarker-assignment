@@ -287,25 +287,35 @@ where each $r$ is the valid-sample ratio for that modality within a trial.
 
 ## Raw Signals: Quality In Practice
 
-::: {.columns}
-::: {.column width="68%"}
-![](../../output/plots/raw_signals_quality.png){width=100%}
-:::
-::: {.column width="32%"}
-### What each panel shows
+```{=html}
+<div style="display: flex; justify-content: center; width: 100%;">
+  <img src="../../output/plots/raw_signals_quality.png" style="width: 100%; height: auto;">
+</div>
 
-- **High (score 2):** clean pupil trace, low motion throughout {.fragment}
-- **Medium (score 1):** noticeable motion bursts interrupt the signal mid-trial {.fragment}
-- **Low (score 0):** pervasive motion contaminates the pupil channel — trial excluded {.fragment}
-
-::: {.fragment .callout style="margin-top:18px;"}
-Colour = MotionMag (green → calm, red → high). One representative trial highlighted; grey traces are all other trials.
-:::
-:::
-:::
+<div class="card-grid three" style="margin: 14px auto 0; width: 90%;">
+  <div class="card">
+    <h3 style="font-size: 1.1em; color: var(--accent); margin-bottom: 8px;"><i class="fa-solid fa-circle" style="color: #1b6b73;"></i> Subject S001</h3>
+    <p style="font-size: 0.9em; margin-top: 0; margin-bottom: 4px; color: var(--ink);">10/10 valid trials</p>
+    <p style="font-size: 0.85em; margin-top: 0; color: var(--muted);">Mean Quality Score: 2.0</p>
+  </div>
+  <div class="card">
+    <h3 style="font-size: 1.1em; color: var(--accent); margin-bottom: 8px;"><i class="fa-solid fa-circle" style="color: #e5a428;"></i> Subject S171</h3>
+    <p style="font-size: 0.9em; margin-top: 0; margin-bottom: 4px; color: var(--ink);">7/10 valid trials</p>
+    <p style="font-size: 0.85em; margin-top: 0; color: var(--muted);">Mean Quality Score: 1.2</p>
+  </div>
+  <div class="card">
+    <h3 style="font-size: 1.1em; color: var(--accent); margin-bottom: 8px;"><i class="fa-solid fa-circle" style="color: #d15656;"></i> Subject S002</h3>
+    <p style="font-size: 0.9em; margin-top: 0; margin-bottom: 4px; color: var(--ink);">0/10 valid trials</p>
+    <p style="font-size: 0.85em; margin-top: 0; color: var(--muted);">Mean Quality Score: N/A</p>
+  </div>
+</div>
+```
 
 ::: notes
 - Three rows = three representative trials: top = quality score 2 (high), middle = score 1 (medium), bottom = score 0 (excluded).
+  - High: Clean pupil trace, minimal artifacts throughout.
+  - Medium: Noticeable artifacts interrupt the signal mid-trial.
+  - Low: Pervasive masking/data loss — trial excluded.
 - RdYlGn_r colour scale: green = low motion magnitude, yellow = moderate, red = high. Motion magnitude is derived from head-tracking position changes.
 - Per-sample masking means we do not discard the entire trial when a few samples are bad — we mask only the contaminated samples and compute features from the remaining clean ones. The trial-level quality score then summarises how many samples survived.
 :::
