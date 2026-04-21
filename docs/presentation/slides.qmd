@@ -5,11 +5,13 @@ author: "Salil Apte"
 date: "2026-04-21"
 format:
   revealjs:
+    theme: simple
     slide-number: c/t
     transition: fade
     incremental: false
     width: 1280
     height: 800
+    margin: 0.04
     fig-align: center
     embed-resources: true
     toc: false
@@ -18,265 +20,27 @@ format:
     code-line-numbers: false
     controls-layout: edges
     smaller: false
+    css: slides-styles.css
 ---
 
-```{=html}
-<style>
-:root {
-  --accent: #1b6b73;
-  --accent-soft: #d7eef0;
-  --ink: #1f2a33;
-  --muted: #5f6b73;
-  --warm: #d7923b;
-  --danger: #b54d42;
-  --ok: #2e7d5b;
-  --panel: #f7faf9;
-}
 
-.reveal {
-  font-size: 32px;
-}
 
-.reveal h1, .reveal h2, .reveal h3 {
-  color: var(--ink);
-  letter-spacing: 0.01em;
-}
-
-.reveal h2 {
-  margin-bottom: 0.45em;
-}
-
-.reveal p, .reveal li {
-  color: var(--ink);
-}
-
-.muted {
-  color: var(--muted);
-}
-
-.accent {
-  color: var(--accent);
-}
-
-.lead {
-  font-size: 1.15em;
-  line-height: 1.35;
-}
-
-.small {
-  font-size: 0.72em;
-}
-
-.tiny {
-  font-size: 0.58em;
-}
-
-.pill-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 18px;
-}
-
-.pill {
-  padding: 10px 16px;
-  border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--ink);
-  font-size: 0.72em;
-  border: 1px solid rgba(27, 107, 115, 0.18);
-}
-
-.card-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-top: 16px;
-}
-
-.card-grid.three {
-  grid-template-columns: 1fr 1fr 1fr;
-}
-
-.card {
-  background: linear-gradient(180deg, #ffffff 0%, var(--panel) 100%);
-  border: 1px solid rgba(27, 107, 115, 0.12);
-  border-radius: 18px;
-  padding: 18px 20px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
-  text-align: left;
-}
-
-.card h3 {
-  margin: 0 0 10px 0;
-  font-size: 0.92em;
-}
-
-.card p {
-  font-size: 0.68em;
-  line-height: 1.35;
-  margin: 0;
-}
-
-.hero-band {
-  background: linear-gradient(135deg, #eef8f8 0%, #fff7eb 100%);
-  border-radius: 24px;
-  padding: 26px 30px;
-  text-align: left;
-  box-shadow: inset 0 0 0 1px rgba(27, 107, 115, 0.08);
-}
-
-.metric-strip {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-top: 18px;
-}
-
-.metric {
-  background: #fff;
-  border-radius: 18px;
-  padding: 16px 18px;
-  border: 1px solid rgba(27, 107, 115, 0.12);
-}
-
-.metric .value {
-  font-size: 1.1em;
-  font-weight: 700;
-  color: var(--accent);
-}
-
-.metric .label {
-  font-size: 0.62em;
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-.score-band {
-  display: grid;
-  grid-template-columns: 2fr 2fr 1fr;
-  gap: 0;
-  border-radius: 18px;
-  overflow: hidden;
-  margin-top: 18px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.score-band > div {
-  padding: 18px;
-  text-align: center;
-  font-size: 0.75em;
-  font-weight: 600;
-}
-
-.score-poor { background: #f4d7d3; }
-.score-ok { background: #faedbf; }
-.score-good { background: #d8efe1; }
-
-.equation-box {
-  background: #fff;
-  border: 1px solid rgba(27, 107, 115, 0.12);
-  border-radius: 18px;
-  padding: 20px;
-  margin-top: 18px;
-}
-
-.callout {
-  background: #fff;
-  border-left: 6px solid var(--accent);
-  padding: 16px 18px;
-  border-radius: 10px;
-  font-size: 0.72em;
-}
-
-.ascii-guide pre {
-  font-size: 0.44em;
-  line-height: 1.2;
-}
-
-.evidence-grid {
-  display: grid;
-  grid-template-columns: 2.2fr repeat(6, 1fr);
-  gap: 8px;
-  align-items: stretch;
-  margin-top: 14px;
-  font-size: 0.6em;
-}
-
-.evidence-grid .head,
-.evidence-grid .cell {
-  padding: 10px 8px;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.evidence-grid .head {
-  background: #eaf4f5;
-  font-weight: 700;
-}
-
-.evidence-grid .rowname {
-  text-align: left;
-  background: #f5f8f8;
-  font-weight: 600;
-}
-
-.ok { background: #dff2e6; color: #17563c; }
-.warn { background: #faedbf; color: #745100; }
-
-.footer-note {
-  font-size: 0.58em;
-  color: var(--muted);
-  margin-top: 12px;
-}
-
-.two-col-list li {
-  margin-bottom: 12px;
-}
-</style>
-```
-
-## Why This Work Matters
+## The Question
 
 ::: {.hero-band}
-This assignment asks a practical question: can short VR relaxation trials yield pupil-based biomarkers that are **physiologically plausible**, **statistically robust**, and **usable in production workflows**?
+Can a 40-second VR trial produce pupil signals reliable enough to use as biomarkers? Here is what I found, how I tested it, and how it connects to your product.
 :::
 
 ::: {.pill-row}
 <div class="pill fragment">Signal validation before inference</div>
-<div class="pill fragment">Feature engineering grounded in physiology</div>
-<div class="pill fragment">Robustness checks beyond a single p-value</div>
-<div class="pill fragment">Pipeline structure that can move toward backend use</div>
+<div class="pill fragment">Features grounded in physiology</div>
+<div class="pill fragment">Robustness beyond a single p-value</div>
+<div class="pill fragment">Pipeline ready for backend use</div>
 :::
 
 ::: notes
-- Frame the talk as three threads: (1) signal quality and validation, (2) feature engineering and candidate selection, (3) how the pipeline could sit in a product.
-- "Noisier labels" = self-reported STAI scores are subjective and vary across time, unlike objective performance labels. "Stricter process expectations" = healthcare/wellness contexts require audit trails, version control, and reproducibility that a research notebook alone does not provide.
-:::
-
-## Assignment Goals
-
-::: {.columns}
-::: {.column width="52%"}
-<div class="fragment callout">Identify physiological features linked to STAI state and trait anxiety.</div>
-
-<div class="fragment callout" style="margin-top:12px;">Show how biomarker sensitivity is tested, not just claimed.</div>
-
-<div class="fragment callout" style="margin-top:12px;">Discuss implementation, scaling, and regulated software-development constraints.</div>
-:::
-::: {.column width="48%"}
-### What I optimised for
-
-- Physiological interpretability
-- Reproducible pipeline structure 
-- Conservative candidate selection 
-- Clean handoff to product/backend discussions
-:::
-:::
-
-::: notes
-- The brief asks for workflow and production discussion, not only correlation results — that is why the deck covers architecture and SDLC (Software Development Life Cycle) slides.
-- SDLC in a regulated context means each code change is reviewed, validated against a locked dataset, and traceable to a versioned release before it reaches users.
+- Three threads: signal quality and validation, feature engineering and candidate selection, how the pipeline could sit in a regulated product.
+- STAI scores are subjective; that is why robustness checks dominate the methodology rather than ranking on a single statistic.
 :::
 
 ## Hypotheses
@@ -315,13 +79,18 @@ This assignment asks a practical question: can short VR relaxation trials yield 
 - Stress H4 because the brief explicitly asks how sensitivity would be proven.
 :::
 
-## Dataset At A Glance
+## Data & Experimental Design
 
 ::: {.columns}
 ::: {.column width="58%"}
-```{mermaid}
-flowchart LR
-  A[5 s baseline] --> B[30 s relaxation] --> C[5 s break]
+```{=html}
+<div class="trial-chain">
+  <div class="tc-box"><div class="tc-val">5 s</div><div class="tc-label">Baseline</div></div>
+  <div class="tc-arrow">&#8594;</div>
+  <div class="tc-box"><div class="tc-val">30 s</div><div class="tc-label">Relaxation</div></div>
+  <div class="tc-arrow">&#8594;</div>
+  <div class="tc-box"><div class="tc-val">5 s</div><div class="tc-label">Break</div></div>
+</div>
 ```
 
 ```{=html}
@@ -334,16 +103,16 @@ flowchart LR
 ```
 :::
 ::: {.column width="42%"}
-### Signals captured
+### Signals
 
-- Pupil diameter 
-- Gaze position 
+- Pupil diameter
+- Gaze position
 - Pulse BPM / PPG quality
-- Motion-derived disturbance
+- Motion (head-tracking)
 
-### Key implication
-
-Self-report is informative but noisy, so robustness checks matter more than in a purely performance-labelled setting.
+::: {.callout style="margin-top:14px;"}
+Self-report STAI is the target. Subjective targets demand harder robustness checks than performance labels would.
+:::
 :::
 :::
 
@@ -353,40 +122,35 @@ Self-report is informative but noisy, so robustness checks matter more than in a
 - "Self-report is noisy" means two people with the same physiology can give different scores depending on mood, introspection ability, or survey fatigue — hence why robustness checks matter more here.
 :::
 
-## Pipeline: Data Flow And Lineage
+## Pipeline: Data Flow
 
-```{mermaid}
-flowchart LR
-  subgraph IN[Inputs]
-    R1[(subjects.csv)]
-    R2[(timeseries.csv)]
-  end
-  subgraph VAL[Validation · validation.py]
-    M[Per-sample masks<br/>pupil · bpm · gaze · motion]
-    Q[Trial quality score<br/>0 / 1 / 2]
-  end
-  subgraph FEAT[Features · features.py]
-    PT[Per-trial features]
-    AGG[Subject aggregation<br/>median + IQR]
-  end
-  subgraph SEL[Selection · selection.py]
-    DC[Redundancy removal]
-    Z[z-score]
-    PCA[PCA + permutation + summaries]
-  end
-  subgraph OUT[Outputs]
-    O1[(trial_scores.parquet)]
-    O2[(features.parquet)]
-    O3[(zscore_params.csv)]
-    O4[(plots + summary CSVs)]
-  end
-  R2 --> M --> Q --> PT --> AGG --> DC --> Z --> PCA
-  R1 --> AGG
-  R1 --> PCA
-  Q -.-> O1
-  AGG -.-> O2
-  Z -.-> O3
-  PCA -.-> O4
+```{=html}
+<div class="flow-grid">
+  <div class="flow-node fn-io">
+    <div class="fn-title">Inputs</div>
+    <div class="fn-sub">subjects.csv<br>timeseries.csv</div>
+  </div>
+  <div class="flow-arrow">&#8594;</div>
+  <div class="flow-node">
+    <div class="fn-title">Validation</div>
+    <div class="fn-sub">per-sample masks<br>trial quality 0/1/2</div>
+  </div>
+  <div class="flow-arrow">&#8594;</div>
+  <div class="flow-node">
+    <div class="fn-title">Features</div>
+    <div class="fn-sub">per-trial extraction<br>subject aggregation</div>
+  </div>
+  <div class="flow-arrow">&#8594;</div>
+  <div class="flow-node">
+    <div class="fn-title">Selection</div>
+    <div class="fn-sub">redundancy removal<br>z-score · PCA</div>
+  </div>
+  <div class="flow-arrow">&#8594;</div>
+  <div class="flow-node fn-io">
+    <div class="fn-title">Outputs</div>
+    <div class="fn-sub">parquet · CSV<br>plots · summaries</div>
+  </div>
+</div>
 ```
 
 ::: notes
@@ -397,49 +161,36 @@ flowchart LR
 
 ## Pipeline: Code Architecture
 
-```{mermaid}
-flowchart TB
-  subgraph ENTRY[Entry points]
-    M1[main.py]
-    NB[analysis.ipynb]
-    API[Future API wrapper]
-  end
-  subgraph ORCH[Orchestration]
-    P[pipeline.py<br/>run_preprocessing · run_analysis]
-  end
-  subgraph CORE[Core modules]
-    V[validation.py]
-    F[features.py]
-    S[selection.py]
-    PL[plotting.py]
-  end
-  subgraph CFG[Configuration]
-    C[constants.py]
-  end
-  M1 --> P
-  NB -.-> V
-  NB -.-> S
-  NB -.-> PL
-  API -.-> P
-  P --> V & F & S & PL
-  C -.-> V & F & S & PL
+```{=html}
+<div style="display:grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap:10px; align-items:center; font-size:0.6em; margin:10px 0;">
+  <div>
+    <div style="font-weight:700; color:var(--accent); margin-bottom:6px;">Entry points</div>
+    <div class="pipeline-step"><span class="step-label">main.py</span><span class="step-detail">— CLI</span></div>
+    <div class="pipeline-step"><span class="step-label">analysis.ipynb</span><span class="step-detail">— exploration</span></div>
+    <div class="pipeline-step"><span class="step-label">FastAPI wrapper</span><span class="step-detail">— future</span></div>
+  </div>
+  <div style="text-align:center; color:var(--accent); font-size:1.4em;">&#8594;</div>
+  <div>
+    <div style="font-weight:700; color:var(--accent); margin-bottom:6px;">Orchestration</div>
+    <div class="pipeline-step"><span class="step-label">pipeline.py</span><span class="step-detail">— run_preprocessing / run_analysis</span></div>
+    <div style="margin-top:10px; font-weight:700; color:var(--accent); margin-bottom:6px;">Configuration</div>
+    <div class="pipeline-step"><span class="step-label">constants.py</span><span class="step-detail">— thresholds, weights</span></div>
+  </div>
+  <div style="text-align:center; color:var(--accent); font-size:1.4em;">&#8594;</div>
+  <div>
+    <div style="font-weight:700; color:var(--accent); margin-bottom:6px;">Core modules</div>
+    <div class="pipeline-step"><span class="step-label">validation.py</span></div>
+    <div class="pipeline-step"><span class="step-label">features.py</span></div>
+    <div class="pipeline-step"><span class="step-label">selection.py</span></div>
+    <div class="pipeline-step"><span class="step-label">plotting.py</span></div>
+  </div>
+</div>
 ```
 
-::: {.columns}
-::: {.column width="50%"}
-- Orchestration is isolated in `pipeline.py` {.fragment}
-- Thresholds and weights are localised in `constants.py` {.fragment}
-:::
-::: {.column width="50%"}
-- The notebook is an exploration layer, not a separate implementation {.fragment}
-- This keeps CLI, notebook, and future API discussion grounded in the same core modules {.fragment}
-:::
-:::
-
 ::: notes
-- CLI (Command-Line Interface) = running `python main.py` from a terminal. The notebook calls the same underlying functions but directly, bypassing `pipeline.py`.
-- Orchestration layer (`pipeline.py`) means a single function call kicks off the entire multi-step workflow in the right order — useful for automation and API wrapping.
-- `constants.py` stores all thresholds and weights in one place so changing a parameter (e.g. the quality cutoff) does not require hunting through multiple files.
+- CLI and notebook share the same core modules; the notebook bypasses `pipeline.py` for finer control during exploration.
+- A FastAPI wrapper is a thin layer over `pipeline.py`, not a rewrite — this is what makes the backend conversation credible.
+- `constants.py` localises thresholds and weights, so re-tuning a parameter does not require hunting through modules.
 :::
 
 ## Validation: Per-Sample Masks
@@ -579,22 +330,32 @@ Colour = MotionMag (green → calm, red → high). One representative trial high
 
 ::: {.columns}
 ::: {.column width="58%"}
-```{mermaid}
-flowchart LR
-  A[Valid trials<br/>per subject] --> B[Per-trial features]
-  B --> C[Median aggregation]
-  B --> D[Trial-to-trial IQR]
-  C --> E[Subject feature set]
-  D --> E
-  E --> F[Redundancy removal + quality join]
+```{=html}
+<div class="pipeline">
+  <div class="pipeline-step"><span class="step-num">1</span><span class="step-label">Valid trials per subject</span><span class="step-detail">&nbsp;— up to 10 retained</span></div>
+  <div class="pipeline-arrow">&#8595;</div>
+  <div class="pipeline-step"><span class="step-num">2</span><span class="step-label">Per-trial feature extraction</span><span class="step-detail">&nbsp;— 39 features × trial</span></div>
+  <div class="pipeline-arrow">&#8595;</div>
+  <div class="pipeline-step"><span class="step-num">3</span><span class="step-label">Median aggregation + IQR</span><span class="step-detail">&nbsp;— robust central + spread</span></div>
+  <div class="pipeline-arrow">&#8595;</div>
+  <div class="pipeline-step"><span class="step-num">4</span><span class="step-label">Subject feature set</span><span class="step-detail">&nbsp;— 78 columns (39 + 39)</span></div>
+  <div class="pipeline-arrow">&#8595;</div>
+  <div class="pipeline-step"><span class="step-num">5</span><span class="step-label">Redundancy removal + quality join</span><span class="step-detail">&nbsp;— 57 remain</span></div>
+</div>
 ```
 :::
 ::: {.column width="42%"}
-### Why this aggregation?
+### Aggregation choices
 
-- Median is robust to surviving noisy trials {.fragment}
-- IQR preserves intra-subject variability {.fragment}
-- Redundancy removal happens after aggregation, not before {.fragment}
+::: {.fragment}
+- Median over trials: robust to one or two borderline-quality trials surviving the mask
+:::
+::: {.fragment}
+- IQR preserved: intra-subject instability is itself informative
+:::
+::: {.fragment}
+- Redundancy removal *after* aggregation, not before — trial-level correlation is not subject-level correlation
+:::
 :::
 :::
 
@@ -607,21 +368,26 @@ flowchart LR
 
 ## Selection Funnel
 
-```{mermaid}
-flowchart TD
-  A[78 subject-level columns] --> B[Remove near-constant and highly correlated features]
-  B --> C[Top-10 overlap by Spearman and Pearson]
-  C --> D[Reject quality-driven features]
-  D --> E[Permutation test<br/>1000 shuffles]
-  E --> F[Metadata effect-size screen]
-  F --> G((6 candidates))
+```{=html}
+<div class="pipeline">
+  <div class="pipeline-step"><span class="step-num">1</span><span class="step-label">78 subject-level columns</span></div>
+  <div class="pipeline-arrow">&#8595;</div>
+  <div class="pipeline-step"><span class="step-num">2</span><span class="step-label">Remove near-constant &amp; highly correlated features</span></div>
+  <div class="pipeline-arrow">&#8595;</div>
+  <div class="pipeline-step"><span class="step-num">3</span><span class="step-label">Top-10 overlap by Spearman and Pearson</span></div>
+  <div class="pipeline-arrow">&#8595;</div>
+  <div class="pipeline-step"><span class="step-num">4</span><span class="step-label">Reject quality-driven features</span></div>
+  <div class="pipeline-arrow">&#8595;</div>
+  <div class="pipeline-step"><span class="step-num">5</span><span class="step-label">Permutation test</span><span class="step-detail">&nbsp;— 1000 label shuffles, p ≤ 0.001</span></div>
+  <div class="pipeline-arrow">&#8595;</div>
+  <div class="pipeline-step"><span class="step-num">6</span><span class="step-label">Metadata effect-size screen</span><span class="step-detail">&nbsp;— age, sex, calibration, trial order</span></div>
+  <div class="pipeline-arrow">&#8595;</div>
+  <div class="pipeline-step" style="background: var(--accent-soft); border-color: rgba(27,107,115,0.3); font-weight:700;"><span class="step-label" style="color:var(--accent);">6 candidate biomarkers</span></div>
+</div>
 ```
 
-::: {.pill-row}
-<div class="pill fragment">Stability</div>
-<div class="pill fragment">Quality independence</div>
-<div class="pill fragment">Permutation significance</div>
-<div class="pill fragment">Metadata robustness</div>
+::: {.fragment .callout style="margin-top:18px;"}
+Each stage rejects a different failure mode — not a re-test of the same effect.
 :::
 
 ::: notes
@@ -652,12 +418,12 @@ flowchart TD
 - Calibration colouring: dots are colour-coded by whether the eye-tracker was recalibrated during the session. If the effect disappeared when colouring by calibration, it would suggest the association is an artifact of acquisition quality rather than physiology.
 :::
 
-## Sensitivity Test: Permutation Null
+## Permutation Test
 
 ![](../../output/plots/permutation_null_stai_t.png){width=94%}
 
 ::: {.fragment .callout}
-All six candidates survive permutation testing at $p \le 0.001$ with 1000 label shuffles.
+All six candidates clear $p \le 0.001$ against a 1000-shuffle null — no parametric assumptions.
 :::
 
 ::: notes
@@ -666,18 +432,12 @@ All six candidates survive permutation testing at $p \le 0.001$ with 1000 label 
 - "Fewer assumptions" = unlike a t-test or F-test, the permutation approach makes no assumptions about the distribution of the data; the null distribution is constructed entirely from the actual data.
 :::
 
-## PCA: Structure Of The Feature Space
+## PCA: What Drives Variance
 
-::: {.columns}
-::: {.column width="10%"}
-![](../../output/plots/pca_colored.png){width=100%}
-:::
-:::
+![](../../output/plots/pca_colored.png){width=88% fig-align="center"}
 
-::: {.pill-row}
-<div class="pill fragment">PC1 is clearly quality-dominated</div>
-<div class="pill fragment">PC2 is the most anxiety-aligned component</div>
-<div class="pill fragment">PC2 still carries some calibration/quality association, so the claim stays measured</div>
+::: {.fragment .callout style="margin-top:14px;"}
+**PC1** is dominated by data quality. **PC2** is the most STAI-aligned axis. **PC3** carries the residual anxiety signal that PC2 does not. The honest claim: anxiety is the dominant *non-quality* source of variance.
 :::
 
 ::: notes
@@ -742,102 +502,222 @@ The point is convergence: no candidate survives because of one statistic alone.
 ![](../../output/plots/candidate_loadings.png){width=100%}
 :::
 ::: {.column width="42%"}
-### Interpretation
+### Convergent validity
 
-- Univariate candidates also appear in the dominant PCA loading structure {.fragment}
-- Support is spread across PC2 and PC3 rather than one perfectly clean latent factor {.fragment}
-- That is still useful convergence, especially after the quality-dominated PC1 {.fragment}
+::: {.fragment}
+- The same six features picked by univariate ranking also load on the STAI-aligned PCs
 :::
+::: {.fragment}
+- Support spreads across PC2 and PC3 — no single clean latent factor, but two converging methods
+:::
+::: {.fragment}
+- PCA serves as corroboration here, not as the discovery method
+:::
+:::
+:::
+
+## Production Architecture
+
+```{=html}
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
+<div>
+<div class="flow-step fragment">
+  <div class="fs-num">1</div>
+  <div class="fs-body">
+    <div class="fs-title">Ingestion</div>
+    <div class="fs-detail">POST /ingest-session — schema-validated upload from VR client</div>
+    <div class="fs-tools"><span class="tool-tag">FastAPI</span><span class="tool-tag">Pydantic</span><span class="tool-tag">JWT auth</span></div>
+  </div>
+</div>
+<div class="flow-arrow-v">&#8595;</div>
+<div class="flow-step fragment">
+  <div class="fs-num">2</div>
+  <div class="fs-body">
+    <div class="fs-title">Storage</div>
+    <div class="fs-detail">Raw timeseries, subject metadata, processing logs</div>
+    <div class="fs-tools"><span class="tool-tag">S3</span><span class="tool-tag">PostgreSQL</span><span class="tool-tag">Parquet</span></div>
+  </div>
+</div>
+<div class="flow-arrow-v">&#8595;</div>
+<div class="flow-step fragment">
+  <div class="fs-num">3</div>
+  <div class="fs-body">
+    <div class="fs-title">Async processing</div>
+    <div class="fs-detail">Job queue → worker calls run_preprocessing(): validate → score trials → features → aggregate</div>
+    <div class="fs-tools"><span class="tool-tag">Celery / RQ</span><span class="tool-tag">Redis</span><span class="tool-tag">src/pipeline.py</span></div>
+  </div>
+</div>
+</div>
+<div>
+<div class="flow-step fragment">
+  <div class="fs-num">4</div>
+  <div class="fs-body">
+    <div class="fs-title">Analysis &amp; scoring</div>
+    <div class="fs-detail">run_analysis() applies frozen z-score parameters from training cohort</div>
+    <div class="fs-tools"><span class="tool-tag">zscore_params.csv</span><span class="tool-tag">scikit-learn</span><span class="tool-tag">feature store</span></div>
+  </div>
+</div>
+<div class="flow-arrow-v">&#8595;</div>
+<div class="flow-step fragment">
+  <div class="fs-num">5</div>
+  <div class="fs-body">
+    <div class="fs-title">Serving</div>
+    <div class="fs-detail">GET /subject-features/{id} · GET /quality-report/{id}</div>
+    <div class="fs-tools"><span class="tool-tag">FastAPI</span><span class="tool-tag">cached results</span></div>
+  </div>
+</div>
+<div class="flow-arrow-v">&#8595;</div>
+<div class="flow-step fragment">
+  <div class="fs-num">6</div>
+  <div class="fs-body">
+    <div class="fs-title">Monitoring</div>
+    <div class="fs-detail">Signal-quality drift, feature drift, failure rate by device cohort</div>
+    <div class="fs-tools"><span class="tool-tag">Prometheus</span><span class="tool-tag">Grafana</span><span class="tool-tag">alerts</span></div>
+  </div>
+</div>
+</div>
+</div>
+```
+
+::: {.fragment .callout style="margin-top:14px;"}
+**Already separable.** `run_preprocessing()` and `run_analysis()` in `src/pipeline.py` map directly onto stages 3–4 — the API is a thin wrapper, not a rewrite. Saved `zscore_params.csv` lets new subjects be scored against the training distribution without recomputing on the full cohort.
 :::
 
 ::: notes
-- This closes the loop: PCA is used as corroboration, not as the sole discovery method.
+- Ingestion separates I/O bound work from compute. Pydantic validates schema and ranges before the worker spins up.
+- Storage layer: S3 for raw timeseries (cheap, large), PostgreSQL for subject metadata and job state, Parquet feature store for downstream queries.
+- Async processing keeps the API responsive: a 30 s upload returns instantly with a job ID; the worker pool handles the heavy lifting.
+- Frozen z-score params are the key to incremental scoring — new cohorts do not change the standardisation, so per-subject scores remain comparable across releases.
+- Monitoring closes the loop: drift in signal quality, feature distributions, or failure rates by device triggers alerts before the next regulated release.
 :::
 
-## How This Could Integrate Into A Backend
+## Regulated Development & Code Freezes
+
+```{=html}
+<div class="process-strip">
+  <div class="process-cell"><div class="pc-num">1</div><div class="pc-title">Develop</div><div class="pc-detail">feature branch<br>MLflow tracking<br>DVC dataset version</div></div>
+  <div class="process-cell"><div class="pc-num">2</div><div class="pc-title">Pre-freeze</div><div class="pc-detail">CI: unit + schema tests<br>baseline output diff</div></div>
+  <div class="process-cell"><div class="pc-num">3</div><div class="pc-title">Freeze</div><div class="pc-detail">release branch<br>pin deps<br>lock feature defs</div></div>
+  <div class="process-cell"><div class="pc-num">4</div><div class="pc-title">Validate</div><div class="pc-detail">locked-dataset rerun<br>sign-off in QMS</div></div>
+  <div class="process-cell"><div class="pc-num">5</div><div class="pc-title">Release</div><div class="pc-detail">tagged version<br>artifact bundle hash</div></div>
+  <div class="process-cell" style="background:var(--accent-soft);"><div class="pc-num">6</div><div class="pc-title">Post-freeze</div><div class="pc-detail">version bump<br>full re-validation<br>past versions reproducible</div></div>
+</div>
+```
 
 ::: {.columns}
-::: {.column width="58%"}
-```{mermaid}
-flowchart TD
-  VR[VR Client] --> GW[API Gateway / Auth]
-  GW --> API["FastAPI service\nPOST /preprocess\nPOST /analyze\nGET /jobs/{id}"]
-  API --> Q[Job queue]
-  Q --> W[Worker pool]
-  W --> OS[(Object store)]
-  W --> DB[(Metadata DB)]
-  W --> RES[(Plots / results)]
+::: {.column width="55%"}
+### When something needs to change
+
+```{=html}
+<div class="decision-flow">
+  <div class="decision-node dn-question">Change request arrives</div>
+  <div class="flow-arrow-v">&#8595;</div>
+  <div class="decision-node dn-question">Hotfix on a tagged release?</div>
+  <div class="decision-branches">
+    <div class="decision-branch">
+      <div class="decision-label">Yes</div>
+      <div class="decision-step">Patch branch from tag</div>
+      <div class="flow-arrow-v">&#8595;</div>
+      <div class="decision-step">Re-validate on locked dataset</div>
+      <div class="flow-arrow-v">&#8595;</div>
+      <div class="decision-node dn-terminal">Patch tag (v1.0.1)</div>
+    </div>
+    <div class="decision-branch">
+      <div class="decision-label">No — new feature</div>
+      <div class="decision-step">Feature branch from main</div>
+      <div class="flow-arrow-v">&#8595;</div>
+      <div class="decision-step">CI + baseline diff</div>
+      <div class="flow-arrow-v">&#8595;</div>
+      <div class="decision-node dn-terminal">Release branch + version bump</div>
+    </div>
+  </div>
+</div>
 ```
 :::
-::: {.column width="42%"}
-### Immediate design implications
+::: {.column width="45%"}
+### What ties a release together
 
-- `run_preprocessing()` and `run_analysis()` are already separable {.fragment}
-- Input-schema validation should happen before any heavy processing {.fragment}
-- Longer runs should move to async jobs rather than blocking requests {.fragment}
-- Saved z-score parameters support incremental scoring of new cohorts {.fragment}
+::: {.fragment}
+- **Code commit hash** — Git tag
+:::
+::: {.fragment}
+- **Dataset version** — DVC / MLflow run
+:::
+::: {.fragment}
+- **Feature schema** — frozen at release
+:::
+::: {.fragment}
+- **Model artifact** — MLflow model registry
+:::
+::: {.fragment}
+- **Validation report** — QMS sign-off in Confluence
+:::
+
+::: {.fragment .callout style="margin-top:14px;"}
+New data improves the system through controlled reprocessing and versioned model updates — never silent changes to a deployed version.
+:::
 :::
 :::
 
 ::: notes
-- API Gateway / Auth = the entry point that authenticates requests (e.g. JWT tokens) and rate-limits before they reach the processing service. Keeps security logic separate from business logic.
-- Job queue = instead of the API blocking while a long computation runs, it immediately returns a job ID and queues the work. The client polls `GET /jobs/{id}` for the result. This pattern is called async task processing.
-- Object store = blob storage (e.g. S3, Azure Blob) for large files like raw timeseries or output plots. Cheaper and more scalable than storing binary data in a relational database.
-- Saved z-score parameters (`zscore_params.csv`): when scoring a new subject, you apply the mean and std computed from the *training cohort* rather than re-computing from scratch — this ensures new subjects are scored on the same scale.
+- A code freeze is not a code stop. You branch a release line, lock dependencies and feature definitions, and continue developing on main.
+- Every release ties together five artifacts so any past output can be reproduced bit-for-bit: code commit, dataset version, feature schema, model artifact, and the validation report that signed off on it.
+- The decision flow on the left answers the most common interview question: "what happens when a bug appears in production after freeze?" — patch from the tag, re-validate, ship a patch tag. Never edit a frozen branch in place.
+- DVC and MLflow are the two pieces missing from the current repo: DVC for dataset versioning, MLflow for experiment tracking and model registry. Both are git-friendly and don't change the existing pipeline structure.
 :::
 
-## Scaling, Regulated SDLC, And Next Steps
+## Limitations & Next Steps
 
-::: {.columns}
-::: {.column width="50%"}
-```{mermaid}
-flowchart LR
-  R[Researcher] --> B[Feature branch]
-  B --> PR[PR]
-  PR --> RV["Reviewer\nreview + sign-off"]
-  RV --> V["Validation\nlocked-dataset rerun + report"]
-  V --> REL["Release\ntagged + frozen artifacts"]
-  REL --> PROD["Production\napproved deployment"]
+```{=html}
+<div class="card-grid">
+  <div class="card fragment">
+    <h3>Effect-size ceiling</h3>
+    <p>Single-feature ρ ≈ 0.4 against a self-report target is at the upper end of what is typical. Honest scope, not a flaw to fix.</p>
+  </div>
+  <div class="card fragment">
+    <h3>BPM under-delivered</h3>
+    <p>VR PPG is motion-sensitive; cardiac features did not survive robustness checks. Better optical placement or ECG would change this.</p>
+  </div>
+  <div class="card fragment">
+    <h3>No predictive model yet</h3>
+    <p>This work stops at validated candidates. A multivariate model with nested cross-validation is the natural next step.</p>
+  </div>
+  <div class="card fragment">
+    <h3>Habituation unmodelled</h3>
+    <p>Trial 1 differs from trial 10 as subjects acclimate. A mixed-effects model with trial index would partition this variance.</p>
+  </div>
+  <div class="card fragment">
+    <h3>Bootstrap CIs</h3>
+    <p>Point estimates only; resampled confidence intervals would communicate uncertainty more honestly to non-statisticians.</p>
+  </div>
+  <div class="card fragment">
+    <h3>Cross-cohort validation</h3>
+    <p>The frozen z-score params are designed for incremental scoring. They need a held-out cohort to confirm they actually generalise.</p>
+  </div>
+</div>
 ```
 
-### Regulated-process principles
-
-- Pinned dependencies and reproducible environment setup {.fragment}
-- Protected main branch and tagged releases {.fragment}
-- Traceability to commit, parameter snapshot, and dataset version {.fragment}
-:::
-::: {.column width="50%"}
-### Limitations and next steps
-
-- Moderate single-feature effect sizes are expected for self-report targets {.fragment}
-- BPM features likely suffered from motion-sensitive VR PPG quality {.fragment}
-- No predictive model or nested CV in this assignment {.fragment}
-- Next: multivariate model, bootstrap CIs, habituation modelling, better PPG denoising {.fragment}
-:::
-:::
-
 ::: notes
-- Regulated SDLC terms: Feature branch = isolated code branch for one change. PR (Pull Request) = formal request to merge a branch, triggering review. Sign-off = explicit approval from a second person before merging. Locked-dataset rerun = re-executing the full analysis on a fixed, versioned dataset to confirm results did not change. Tagged release = a Git version tag (e.g. v1.2.0) that permanently identifies which code produced which outputs.
-- Bootstrap CIs = Bootstrap Confidence Intervals: repeatedly resample the data with replacement (e.g. 10,000 times) and recompute the statistic each time to get a distribution of plausible values. More honest than a single point estimate.
-- Habituation modelling = accounting for the fact that subjects may respond differently to trial 1 vs trial 10 as they habituate to the VR environment — a within-session learning/adaptation effect.
-- Nested CV = Nested Cross-Validation: an unbiased way to evaluate predictive model performance when you also need to tune hyperparameters. The outer loop estimates generalisation; the inner loop selects parameters.
+- Frame the limitations as scope choices, not failures. The audience will respect honesty about ceiling effects more than oversold claims.
+- Habituation modelling is the most concrete methodological next step — mixed-effects with trial index would change the picture for tonic features.
+- Cross-cohort validation is the gating item before any clinical or product claim. Until then, the candidates are exploratory.
 :::
 
 ## Closing
 
 ::: {.hero-band}
-The main result is not just six pupil-based candidates. It is a workflow that moves from noisy VR signals to interpretable, robustness-checked biomarkers in a way that can realistically evolve toward product and regulated-process discussions.
+Six validated pupil biomarkers. A pipeline that is already separable, traceable, and deployable. The process discipline to carry it into a regulated product.
 :::
 
 ::: {.pill-row}
-<div class="pill fragment">Validation before modeling</div>
-<div class="pill fragment">Interpretability before complexity</div>
-<div class="pill fragment">Robustness before deployment claims</div>
+<div class="pill fragment">Validate first</div>
+<div class="pill fragment">Stay interpretable</div>
+<div class="pill fragment">Earn the claim</div>
 :::
 
 ::: notes
-- Three natural question areas to invite:
-  1. Physiology: why pupil? why these specific features? what would BPM add with better signal quality?
-  2. Methodology: why permutation over a classical t-test? how were the redundancy thresholds chosen? what would a predictive model look like?
-  3. Engineering / product: how would this run in production? what does a regulated submission require? how would you version the z-score parameters across cohorts?
+- Three discussion areas to invite:
+  1. Physiology — why pupil, what BPM would add with cleaner sensors.
+  2. Methodology — permutation vs parametric, redundancy thresholds, how a predictive model would be set up.
+  3. Engineering and regulated process — deployment, code freeze handling, dataset versioning across cohorts.
 :::
