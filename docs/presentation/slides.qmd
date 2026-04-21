@@ -100,44 +100,67 @@ format:
 
 ## Data & Experimental Design
 
-::: {.columns}
-::: {.column width="58%"}
 ```{=html}
-<div class="trial-chain">
-  <div class="tc-box"><div class="tc-val">5 s</div><div class="tc-label">Baseline</div></div>
-  <div class="tc-arrow">&#8594;</div>
-  <div class="tc-box"><div class="tc-val">30 s</div><div class="tc-label">Relaxation</div></div>
-  <div class="tc-arrow">&#8594;</div>
-  <div class="tc-box"><div class="tc-val">5 s</div><div class="tc-label">Break</div></div>
+<div class="sdlc-flow fragment" data-fragment-index="1" style="margin: 0px 0 20px;">
+  <div class="sdlc-step">
+    <div class="ss-icon"><i class="fa-regular fa-circle-dot"></i></div>
+    <div class="ss-label">Baseline</div>
+    <div class="ss-sub">5 s</div>
+  </div>
+  <div class="sdlc-arrow-between"><i class="fa-solid fa-chevron-right"></i></div>
+  <div class="sdlc-step" style="background-color: var(--accent-soft);">
+    <div class="ss-icon"><i class="fa-solid fa-vr-cardboard"></i></div>
+    <div class="ss-label">Relaxation</div>
+    <div class="ss-sub">30 s</div>
+  </div>
+  <div class="sdlc-arrow-between"><i class="fa-solid fa-chevron-right"></i></div>
+  <div class="sdlc-step">
+    <div class="ss-icon"><i class="fa-solid fa-pause"></i></div>
+    <div class="ss-label">Break</div>
+    <div class="ss-sub">5 s</div>
+  </div>
 </div>
 ```
 
 ```{=html}
-<div class="metric-strip">
-  <div class="metric fragment"><div class="value">500</div><div class="label">subjects</div></div>
-  <div class="metric fragment"><div class="value">10</div><div class="label">trials per subject</div></div>
-  <div class="metric fragment"><div class="value">40 s</div><div class="label">per trial</div></div>
-  <div class="metric fragment"><div class="value">STAI</div><div class="label">targets</div></div>
-  <div class="metric fragment"><div class="value">5</div><div class="label">confounds checked</div></div>
+<div class="metric-strip" style="grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px;">
+  <div class="metric fragment" data-fragment-index="2"><div class="value">500</div><div class="label">subjects tracked</div></div>
+  <div class="metric fragment" data-fragment-index="2"><div class="value">10</div><div class="label">trials per subject</div></div>
+  <div class="metric fragment" data-fragment-index="2"><div class="value">40 s</div><div class="label">duration per trial</div></div>
+  <div class="metric fragment" data-fragment-index="2"><div class="value">5</div><div class="label">confounds</div></div>
+    <!-- <div class="metric fragment" data-fragment-index="2"><div class="value">5</div><div class="label">STAI target scores</div></div> -->
 </div>
 ```
-:::
-::: {.column width="42%"}
-### Signals
 
-- Pupil diameter
-- Gaze position
-- Pulse BPM / PPG quality
-- Motion (head-tracking)
+```{=html}
+<div class="fragment" data-fragment-index="3" style="display: flex; justify-content: space-between; align-items: stretch; gap: 20px; margin-top: 36px; margin-bottom: 20px;">
+  <div style="flex: 1.5; display: flex; flex-direction: column;">
+    <div style="font-weight: 700; color: var(--ink); margin-bottom: 12px; font-size: 0.85em;">Signals Collected</div>
+    <div class="pill-row" style="margin-top:0;">
+      <div class="pill"><i class="fa-solid fa-eye"></i> Pupil</div>
+      <div class="pill"><i class="fa-solid fa-location-crosshairs"></i> Gaze</div>
+      <div class="pill"><i class="fa-solid fa-heart-pulse"></i> Pulse</div>
+      <div class="pill"><i class="fa-solid fa-person-running"></i> Motion</div>
+    </div>
+  </div>
+  <div class="callout" style="flex: 1; margin: 0; padding: 14px 18px; display: flex; align-items: center;">
+    <div>
+      <strong>Target:</strong> Self-report STAI state and STAI trait.
+    </div>
+  </div>
+</div>
+```
 
-::: {.callout style="margin-top:14px;"}
-Self-report STAI is the target. Subjective targets demand harder robustness checks than performance labels would.
-:::
-
-::: {.callout-note style="margin-top:8px; font-size:0.82em;"}
-**Key assumption:** controlled lab lighting means pupil changes are driven by autonomic state, not ambient illuminance. Score-0 trials are dropped rather than imputed — conservative by design.
-:::
-:::
+::: {.fragment data-fragment-index="4"}
+```{=html}
+<div class="hero-band" style="margin-top: 36px; padding: 16px 26px; display: flex; align-items: center; gap: 18px;">
+  <div style="font-size: 1.8em; color: var(--accent);"><i class="fa-solid fa-lightbulb"></i></div>
+  <div>
+    <div style="font-weight: 700; color: var(--accent); font-size: 0.85em; margin-bottom: 3px;">Key Analytical Assumption</div>
+    <div style="font-size: 0.68em; line-height: 1.4; color: var(--ink);">Controlled lab lighting implies pupil changes are driven directly by autonomic state, not ambient illuminance. To remain conservative, bad trials are dropped entirely rather than imputed.</div>
+  </div>
+</div>
+```
 :::
 
 ::: notes
@@ -228,7 +251,7 @@ Validation is deliberately conservative: robust statistics first, feature extrac
 - Modality = type of sensor channel (pupil, BPM, gaze are three separate modalities).
 :::
 
-## Trial Quality Score
+## Trial Quality & Outcomes
 
 ::: {.equation-box}
 $$
@@ -240,27 +263,24 @@ where each $r$ is the valid-sample ratio for that modality within a trial.
 
 ```{=html}
 <div class="score-band">
-  <div class="score-poor fragment">score 0<br><span class="small">&lt; 0.6 &middot; <strong>313 excluded</strong></span></div>
-  <div class="score-ok fragment">score 1<br><span class="small">0.6–0.9 &middot; retained</span></div>
-  <div class="score-good fragment">score 2<br><span class="small">&#8805; 0.9 &middot; <strong>4,687 valid total</strong></span></div>
+  <div class="score-poor fragment" data-fragment-index="1">score 0<br><span class="small">&lt; 0.6 &middot; <strong>313 excluded</strong></span></div>
+  <div class="score-ok fragment" data-fragment-index="2">score 1<br><span class="small">0.6–0.9 &middot; 982 retained</span></div>
+  <div class="score-good fragment" data-fragment-index="3">score 2<br><span class="small">&#8805; 0.9 &middot; <strong>3705 retained</strong></span></div>
 </div>
 ```
+
+::: {.fragment data-fragment-index="4"}
+```{=html}
+<div style="display: flex; justify-content: center;">
+  <img src="../../output/plots/quality_overview.png" style="width: 120%; height: auto;">
+</div>
+```
+:::
 
 ::: notes
 - The quality score q is a weighted average of valid-sample ratios: pupil and BPM get 40% each (primary biomarker channels), gaze gets 20% (useful as an acquisition-quality indicator but not a direct biomarker here).
 - Valid-sample ratio r = (number of unmasked samples) / (total samples in the window). A ratio of 1.0 means every sample passed all masks; 0.0 means every sample was rejected.
 - Score 0 (q < 0.6) = excluded entirely; scores 1 and 2 are both retained for analysis but score 2 trials are used as the highest-confidence subset in sensitivity checks.
-:::
-
-## Quality Outcomes
-
-![](../../output/plots/quality_overview.png){width=100%}
-
-::: {.fragment .footer-note}
-Most trials are retained, but lower-quality data clusters with worse calibration and specific trial/cycle effects.
-:::
-
-::: notes
 - Panel C shows that calibration status (whether the eye-tracker was re-calibrated during the session) correlates with trial quality score. This means quality score differences could partly reflect acquisition conditions, not only the subject's true physiology — which is why candidates are later screened against calibration as a confounder.
 - Confounder = a variable that correlates with both the feature and the target (STAI), creating a spurious association. Calibration and demographics are the main confounders tested here.
 :::
