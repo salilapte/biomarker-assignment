@@ -9,6 +9,10 @@
   --danger: #b54d42;
   --ok: #2e7d5b;
   --panel: #f7faf9;
+  --timeline-1: #1d4ed8;
+  --timeline-2: #0f766e;
+  --timeline-3: #e11d48;
+  --timeline-line: #dbe3ed;
 }
 
 .reveal {
@@ -102,6 +106,65 @@
   padding: 26px 30px;
   text-align: left;
   box-shadow: inset 0 0 0 1px rgba(27, 107, 115, 0.08);
+}
+
+/* Timeline used on assignment overview slide */
+.reveal .overview-timeline {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  margin-top: 1.2rem;
+}
+
+.reveal .overview-timeline__step {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border-top: 3px solid var(--timeline-line);
+}
+
+.reveal .overview-timeline__step--t1 { border-top-color: var(--timeline-1); }
+.reveal .overview-timeline__step--t2 { border-top-color: var(--timeline-2); }
+.reveal .overview-timeline__step--t3 { border-top-color: var(--timeline-3); }
+
+.reveal .overview-timeline__number {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6em;
+  font-weight: 700;
+  color: #fff;
+  flex: 0 0 30px;
+  background: var(--muted);
+}
+
+.reveal .overview-timeline__step--t1 .overview-timeline__number { background: var(--timeline-1); }
+.reveal .overview-timeline__step--t2 .overview-timeline__number { background: var(--timeline-2); }
+.reveal .overview-timeline__step--t3 .overview-timeline__number { background: var(--timeline-3); }
+
+.reveal .overview-timeline__content {
+  font-size: 0.62em;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.reveal .overview-timeline__content strong {
+  color: var(--ink);
+  font-size: 1.15em;
+}
+
+.reveal .overview-timeline__arrow {
+  display: flex;
+  align-items: center;
+  font-size: 1.2em;
+  color: #94a3b8;
+  padding: 16px 6px 0;
+  flex: 0 0 auto;
 }
 
 .metric-strip {

@@ -25,22 +25,41 @@ format:
 
 
 
-## The Question
+## The Assignment Overview
 
-::: {.hero-band}
-Can a 40-second VR trial produce pupil signals reliable enough to use as biomarkers? Here is what I found, how I tested it, and how it connects to your product.
+::: {.hero-band style="margin-bottom: 2rem;"}
+**The Core Question:** Can a 40-second VR trial produce physiological signals reliable enough to serve as sensitive state biomarkers?
 :::
 
-::: {.pill-row}
-<div class="pill fragment"><i class="fa-solid fa-filter"></i> Signal validation before inference</div>
-<div class="pill fragment"><i class="fa-solid fa-wave-square"></i> Features grounded in physiology</div>
-<div class="pill fragment"><i class="fa-solid fa-shield-halved"></i> Robustness beyond a single p-value</div>
-<div class="pill fragment"><i class="fa-solid fa-plug"></i> Pipeline ready for backend use</div>
-:::
+<div class="overview-timeline">
+<div class="overview-timeline__step overview-timeline__step--t1 fragment">
+<div class="overview-timeline__number">1</div>
+<div class="overview-timeline__content">
+<strong>Reproducible Pipeline</strong><br>
+<span>Signal validation, missing data masking, and trial quality scoring.</span>
+</div>
+</div>
+<div class="overview-timeline__step overview-timeline__step--t2 fragment">
+<div class="overview-timeline__number">2</div>
+<div class="overview-timeline__content">
+<strong>Physiological Features</strong><br>
+<span>Candidate engineering & unsupervised dimensionality reduction (PCA).</span>
+</div>
+</div>
+<div class="overview-timeline__step overview-timeline__step--t3 fragment">
+<div class="overview-timeline__number">3</div>
+<div class="overview-timeline__content">
+<strong>Sensitivity & Scaling</strong><br>
+<span>Proving robustness against confounds and preparing the architecture for API integration.</span>
+</div>
+</div>
+</div>
 
 ::: notes
-- Three threads: signal quality and validation, feature engineering and candidate selection, how the pipeline could sit in a regulated product.
-- STAI scores are subjective; that is why robustness checks dominate the methodology rather than ranking on a single statistic.
+- This presentation maps exactly to the assignment brief.
+- Step 1 handles the fundamental requirement: building a clean, reproducible preprocessing pipeline for messy physiological data.
+- Step 2 covers the exploratory data analysis, physiological reasoning, and unsupervised methods.
+- Step 3 addresses the difficult questions: how do we prove sensitivity over a single p-value, and how does this scale into a backend regulated product?
 :::
 
 ## Hypotheses
