@@ -30,6 +30,7 @@ from .plotting import (
     plot_permutation_null,
     plot_quality_overview,
     plot_raw_signals,
+    plot_raw_signals_by_quality,
     plot_scree,
 )
 from .selection import (
@@ -164,10 +165,14 @@ def run_analysis(
     print("── Analysis pipeline ──────────────────────────────────────")
     print(f"Features: {features.shape[0]} subjects × {features.shape[1]} features")
 
-    # ── Plot 1: raw signals ─────────────────────────────────────────────
+    # ── Plot 1a: raw signals — first 3 subjects (exploratory) ────────────
     sample_subjects = timeseries["SubjectID"].unique()[:3]
-    fig = plot_raw_signals(timeseries, sample_subjects, cycle_ids=[1, 2])
+    fig = plot_raw_signals(timeseries, sample_subjects)
     _save_fig(fig, plots_dir / "raw_signals.png")
+
+    # ── Plot 1b: raw signals by quality tier (presentation) ────────────
+    fig = plot_raw_signals_by_quality(timeseries, trial_scores, subject_scores)
+    _save_fig(fig, plots_dir / "raw_signals_quality.png")
     del timeseries  # free memory
 
     # ── Plot 2: quality overview ────────────────────────────────────────

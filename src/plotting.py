@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+from matplotlib.collections import LineCollection
+from matplotlib.lines import Line2D
 
 from .constants import DEFAULT_CONFOUNDER_COLS, DEFAULT_TARGET_COLS, DEFAULT_TOP_N_FEATURES
 
@@ -22,6 +24,8 @@ NEGATIVE_CORRELATION_COLOR = "#b2182b"
 DEFAULT_FEATURE_SCATTER_TOP_N = 3
 DEFAULT_TOP_N_BIOMARKERS = 15
 DEFAULT_RAW_SIGNALS_FIGSIZE = (14, 4)
+DEFAULT_RAW_SIGNALS_PRESENTATION_FIGSIZE = (14, 4)
+MOTION_CMAP = "RdYlGn_r"
 DEFAULT_QUALITY_OVERVIEW_FIGSIZE = (16, 4.5)
 DEFAULT_CORRELATION_MATRIX_FIGSIZE = (12, 10)
 DEFAULT_CORRELATION_MATRIX_TITLE = "Feature correlation matrix"
@@ -71,6 +75,150 @@ def plot_raw_signals(df, subject_ids, cycle_ids=None, figsize=DEFAULT_RAW_SIGNAL
     for ax in axes.flat:
         ax.legend(fontsize=7, loc="upper right")
     fig.tight_layout()
+    return fig
+
+
+# ── Figure 1b: raw signals by quality tier (presentation) ───────────────────
+
+def plot_raw_signals_by_quality(
+    df,
+    trial_scores,
+    subject_scores,
+    figsize=DEFAULT_RAW_SIGNALS_PRESENTATION_FIGSIZE,
+):
+    """Presentation figure: 1×3 grid, one panel per quality tier (high / medium / low subject).
+
+    Subject selection:
+      - High:   subject whose mean_quality is closest to 2.0
+      - Medium: subject whose mean_quality is closest to 1.2 (excluding the high/low picks)
+      - Low:    subject with the lowest mean_quality
+
+    Each panel shows pupil diameter only.  All other trials are drawn as faint grey
+    context traces.  The highlighted trial (whose quality_score matches the tier)
+    is coloured by MotionMag using the RdYlGn_r colormap (green = calm, red = high motion).
+    """
+    ts = trial_scores.reset_index()  # ensures SubjectID, CycleID are columns
+
+    sq = subject_scores["mean_quality"]
+    high_sid = (sq - 2.0).abs().idxmin()
+    low_sid = sq.idxmin()
+    remaining = sq.drop([high_sid, low_sid])
+    med_sid = (remaining - 1.2).abs().idxmin()
+
+    tier_subjects = [
+        (high_sid, 2, "High quality"),
+        (med_sid,  1, "Medium quality"),
+        (low_sid,  0, "Low quality"),
+    ]
+
+    motion_vmin = df["MotionMag"].quantile(0.02)
+    motion_vmax = df["MotionMag"].quantile(0.98)
+    cmap = plt.cm.get_cmap(MOTION_CMAP)
+    norm = plt.Normalize(vmin=motion_vmin, vmax=motion_vmax)
+
+    n_tiers = len(tier_subjects)
+    fig, axes = plt.subplots(
+        1, n_tiers,
+        figsize=(figsize[0], figsize[1]),
+        constrained_layout=True,
+        squeeze=False,
+    )
+    axes = axes[0]  # shape (n_tiers,)
+
+    for col, (sid, target_score, tier_label) in enumerate(tier_subjects):
+        ax = axes[col]
+        sub = df[df["SubjectID"] == sid]
+        sub_ts = ts[ts["SubjectID"] == sid].copy()
+        all_cycle_ids = sorted(sub["CycleID"].dropna().unique().tolist())
+
+        # Pick highlighted cycle matching the tier score; fall back to closest
+        matching = sub_ts[sub_ts["quality_score"] == target_score]
+        if matching.empty:
+            sub_ts["_dist"] = (sub_ts["quality_score"] - target_score).abs()
+            matching = sub_ts.nsmallest(1, "_dist")
+        highlight_cid = int(matching.iloc[0]["CycleID"])
+
+        # Phase shading from highlighted trial time axis
+        hl_trial = sub[sub["CycleID"] == highlight_cid]
+        t0_hl = hl_trial["DeviceTimestamp"].iloc[0]
+        t_hl = (hl_trial["DeviceTimestamp"] - t0_hl) / MICROSECONDS_PER_SECOND
+
+        for phase, color in PHASE_COLORS.items():
+            mask = hl_trial["Phase"].str.lower() == phase
+            if mask.any():
+                t_seg = t_hl[mask]
+                ax.axvspan(t_seg.iloc[0], t_seg.iloc[-1], alpha=0.18, color=color)
+
+        # Context traces — all other cycles, faint grey
+        for cid in all_cycle_ids:
+            if cid == highlight_cid:
+                continue
+            trial = sub[sub["CycleID"] == cid]
+            if trial.empty:
+                continue
+            t0_c = trial["DeviceTimestamp"].iloc[0]
+            t_c = (trial["DeviceTimestamp"] - t0_c) / MICROSECONDS_PER_SECOND
+            ax.plot(t_c.values, trial["PupilDiameter"].values,
+                    lw=0.6, color="#9ca3af", alpha=0.20, zorder=1)
+
+        # Highlighted trial coloured by MotionMag via LineCollection
+        motion = hl_trial["MotionMag"].values
+
+        def _motion_lc(t, y, _ax, _motion=motion, _cmap=cmap, _norm=norm):
+            valid = np.isfinite(y.astype(float)) & np.isfinite(t.astype(float))
+            tv = t[valid].astype(float)
+            yv = y[valid].astype(float)
+            mv = _motion[valid].astype(float)
+            if len(tv) < 2:
+                return None
+            pts = np.array([tv, yv]).T.reshape(-1, 1, 2)
+            segs = np.concatenate([pts[:-1], pts[1:]], axis=1)
+            motion_mid = (mv[:-1] + mv[1:]) / 2
+            lc = LineCollection(segs, cmap=_cmap, norm=_norm, linewidth=1.8, zorder=3)
+            lc.set_array(motion_mid)
+            _ax.add_collection(lc)
+            _ax.autoscale_view()
+            return lc
+
+        _motion_lc(t_hl.values, hl_trial["PupilDiameter"].values, ax)
+
+        # Labels
+        q_row = sub_ts[sub_ts["CycleID"] == highlight_cid]
+        if "quality_continuous" in q_row.columns and len(q_row):
+            q_val = f"{float(q_row['quality_continuous'].values[0]):.2f}"
+        else:
+            q_val = "?"
+        score_str = QUALITY_LABELS.get(target_score, str(target_score))
+
+        ax.set_xlabel("Time (s)")
+        ax.set_ylabel("Pupil diameter (mm)" if col == 0 else "")
+        ax.set_title(f"{tier_label}\n{sid}  C{highlight_cid}  q={q_val}  ({score_str})")
+        ax.axvline(5,  color="#6b7280", lw=0.8, ls="--", alpha=0.6)
+        ax.axvline(35, color="#6b7280", lw=0.8, ls="--", alpha=0.6)
+
+    # Shared y-axis limits: clamp to physiological range, ignore −1 sentinel values
+    from .constants import PUPIL_DIAMETER_MIN_MM, PUPIL_DIAMETER_MAX_MM
+    all_ylims = [ax.get_ylim() for ax in axes]
+    y_min = max(min(lo for lo, _ in all_ylims), PUPIL_DIAMETER_MIN_MM - 0.5)
+    y_max = min(max(hi for _, hi in all_ylims), PUPIL_DIAMETER_MAX_MM + 0.5)
+    for ax in axes:
+        ax.set_ylim(y_min, y_max)
+
+    # Legend on first panel — bottom-left avoids covering the pupil trace
+    phase_handles = [
+        mpatches.Patch(color=c, alpha=0.35, label=p.capitalize())
+        for p, c in PHASE_COLORS.items()
+    ]
+    context_handle = Line2D([0], [0], color="#9ca3af", lw=1.0, alpha=0.5, label="other trials")
+    axes[0].legend(handles=phase_handles + [context_handle], fontsize=7, loc="lower left")
+
+    # MotionMag colorbar anchored to the last panel only
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+    sm.set_array([])
+    cbar = fig.colorbar(sm, ax=axes[-1], shrink=0.85, pad=0.02)
+    cbar.set_label("Motion magnitude", fontsize=8)
+
+    fig.suptitle("Pupil diameter by signal quality tier", fontsize=10)
     return fig
 
 
