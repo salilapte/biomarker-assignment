@@ -782,32 +782,41 @@ Possibly secondary, independent physiological responses.</p>
           display:block!important;
       }</style></aside>
 </section>
-<section id="robustness-evidence-matrix" class="slide level2">
-<h2>Robustness Evidence Matrix</h2>
-<div class="evidence-grid">
-  <div class="head">Candidate</div>
-  <div class="head">Dual corr.</div>
-  <div class="head">Not quality-driven</div>
-  <div class="head">Perm. p</div>
-  <div class="head">Metadata</div>
-  <div class="head">PCA support</div>
-  <div class="head">Theme</div>
-
-  <div class="cell rowname">pupil_relative_delta</div><div class="cell ok">✓</div><div class="cell ok">✓</div><div class="cell ok">≤ 0.001</div><div class="cell ok">small</div><div class="cell ok">PC2</div><div class="cell ok">phasic</div>
-  <div class="cell rowname">pupil_rebound</div><div class="cell ok">✓</div><div class="cell ok">✓</div><div class="cell ok">≤ 0.001</div><div class="cell ok">small</div><div class="cell ok">PC2/3</div><div class="cell ok">recovery</div>
-  <div class="cell rowname">pupil_early_late_diff</div><div class="cell ok">✓</div><div class="cell ok">✓</div><div class="cell ok">≤ 0.001</div><div class="cell ok">small</div><div class="cell ok">PC2</div><div class="cell ok">dynamics</div>
-  <div class="cell rowname">pupil_nonlinearity</div><div class="cell ok">✓</div><div class="cell ok">✓</div><div class="cell ok">≤ 0.001</div><div class="cell ok">small</div><div class="cell ok">PC2/3</div><div class="cell ok">dynamics</div>
-  <div class="cell rowname">pupil_relax_mean</div><div class="cell ok">✓</div><div class="cell ok">✓</div><div class="cell ok">≤ 0.001</div><div class="cell ok">small</div><div class="cell ok">PC3 + some PC2</div><div class="cell ok">tonic</div>
-  <div class="cell rowname">pupil_baseline_mean</div><div class="cell ok">✓</div><div class="cell ok">✓</div><div class="cell ok">≤ 0.001</div><div class="cell ok">small</div><div class="cell warn">mainly PC3</div><div class="cell ok">tonic</div>
-</div>
-<div class="footer-note">
-<p>The point is convergence: no candidate survives because of one statistic alone.</p>
-</div>
+<section id="physiological-themes" class="slide level2">
+<h2>Physiological Themes</h2>
+<div class="columns" style="margin-top: 20px; font-size: 0.9em;">
+<div class="column fragment" style="width:33%;">
+<h3 id="tonic-arousal">1. Tonic Arousal</h3>
+<p><em>(Baseline States)</em></p>
+<ul>
+<li><code>pupil_baseline_mean</code></li>
+<li><code>pupil_relax_mean</code></li>
+</ul>
+<p>Reflects overall resting stress levels, driven by the LC-NE pathway.</p>
+</div><div class="column fragment" style="width:33%;">
+<h3 id="phasic-recovery">2. Phasic &amp; Recovery</h3>
+<p><em>(Event Responses)</em></p>
+<ul>
+<li><code>pupil_relative_delta</code></li>
+<li><code>pupil_rebound</code></li>
+</ul>
+<p>Captures the magnitude of the reaction to relaxation, and the ability to return to baseline.</p>
+</div><div class="column fragment" style="width:33%;">
+<h3 id="temporal-dynamics">3. Temporal Dynamics</h3>
+<p><em>(Adaptation over Time)</em></p>
+<ul>
+<li><code>pupil_nonlinearity</code></li>
+<li><code>pupil_early_late_diff</code></li>
+</ul>
+<p>Tracks competing autonomic drives (sympathetic vs parasympathetic) over the 30s window.</p>
+</div></div>
 <aside class="notes">
 <ul>
-<li>Convergent validity: the fact that features identified by univariate correlation (Spearman/Pearson) also load strongly on the anxiety-aligned PCs provides independent corroboration — two different methods point to the same candidates.</li>
-<li>PC loadings = the weight of each original feature on each principal component. A high loading on PC2 means that feature contributes strongly to the direction of variance most correlated with anxiety.</li>
-<li>PC2 and PC3 split the anxiety-related variance between them rather than concentrating it all in PC2. <code>pupil_baseline_mean</code> loads mainly on PC3 while others load on PC2; both PCs correlate with STAI, so this is still supportive evidence.</li>
+<li><strong>Definitions for the audience/yourself:</strong></li>
+<li><strong>Tonic:</strong> “Always-on” baseline state. High trait anxiety = a larger resting pupil.</li>
+<li><strong>Phasic:</strong> Immediate, short-term reaction to a stimulus (the relaxation period). High anxiety limits the ability to recover back to baseline.</li>
+<li><strong>Temporal vs Phasic:</strong> Phasic measures the <em>size/drop</em> of the reaction. Temporal measures the <em>shape</em> of the curve over time (e.g., struggling to adapt smoothly).</li>
+<li><strong>LC-NE:</strong> Locus coeruleus-norepinephrine pathway. The brain’s main alert/stress system, directly wired to pupil dilation. The more stressed you are generally, the higher the tone here.</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
