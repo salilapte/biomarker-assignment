@@ -658,17 +658,15 @@ q = 0.4 \cdot r_{pupil} + 0.4 \cdot r_{bpm} + 0.2 \cdot r_{gaze}
 </section>
 <section id="correlation-with-stai" class="slide level2">
 <h2>Correlation With STAI</h2>
-<div class="columns">
-<div class="column" style="width:63%;">
+<div style="text-align: center;">
 <p><img data-src="../../output/plots/feature_scatter_stai_t.png" style="width:100.0%"></p>
-</div><div class="column" style="width:37%;">
+</div>
 <h3 id="main-takeaways">Main takeaways</h3>
 <ul>
-<li>Strongest observed single-feature association: <code>pupil_relative_delta</code>, <span class="math inline">\(\rho \approx 0.38\)</span> with STAI_T</li>
+<li>Strongest single-feature association: <code>pupil_relative_delta</code>, <span class="math inline">\(\rho \approx 0.38\)</span> with STAI_T</li>
 <li>Trait anxiety aligns most clearly with tonic and recovery-related pupil features</li>
 <li>Calibration colouring does not explain away the top effects</li>
 </ul>
-</div></div>
 <aside class="notes">
 <ul>
 <li>ρ (rho) = Spearman rank correlation coefficient. Range −1 to +1. |ρ| ≈ 0.1 = small, |ρ| ≈ 0.3 = moderate, |ρ| ≈ 0.5 = large (Cohen’s conventions for behavioural data).</li>
@@ -689,12 +687,14 @@ q = 0.4 \cdot r_{pupil} + 0.4 \cdot r_{bpm} + 0.2 \cdot r_{gaze}
 </section>
 <section id="permutation-test" class="slide level2">
 <h2>Permutation Test</h2>
-
-<img data-src="../../output/plots/permutation_null_stai_t.png" style="width:94.0%" class="r-stretch"><div class="fragment">
+<div style="text-align: center;">
+<p><img data-src="../../output/plots/permutation_null_stai_t.png" style="width:80.0%"></p>
+<div class="fragment" style="text-align: center; display: block; margin-left: auto; margin-right: auto; width: fit-content;">
 <div class="callout callout-none no-icon callout-style-simple">
 <div class="callout-body">
 <div class="callout-content">
 <p>All six candidates clear <span class="math inline">\(p \le 0.001\)</span> against a 1000-shuffle null — no parametric assumptions.</p>
+</div>
 </div>
 </div>
 </div>
@@ -720,15 +720,20 @@ q = 0.4 \cdot r_{pupil} + 0.4 \cdot r_{bpm} + 0.2 \cdot r_{gaze}
 <section id="pca-what-drives-variance" class="slide level2">
 <h2>PCA: What Drives Variance</h2>
 
-<img data-src="../../output/plots/pca_colored.png" class="quarto-figure quarto-figure-center r-stretch" style="width:88.0%"><div class="fragment" style="margin-top:14px;">
-<div class="callout callout-none no-icon callout-style-simple">
-<div class="callout-body">
-<div class="callout-content">
-<p><strong>PC1</strong> is dominated by data quality. <strong>PC2</strong> is the most STAI-aligned axis. <strong>PC3</strong> carries the residual anxiety signal that PC2 does not. The honest claim: anxiety is the dominant <em>non-quality</em> source of variance.</p>
-</div>
-</div>
-</div>
-</div>
+<img data-src="../../output/plots/pca_colored.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"><div class="columns" style="margin-top: 16px; text-align: center; font-size: 0.8em;">
+<div class="column" style="width:33%;">
+<h3 id="pc1-21.8">PC1 (21.8%)</h3>
+<p><strong>System Artifacts</strong><br>
+Appears to be driven by hardware calibration and data quality.</p>
+</div><div class="column" style="width:33%;">
+<h3 id="pc2-17.3">PC2 (17.3%)</h3>
+<p><strong>Clinical Signal</strong><br>
+Likely isolates the primary physiological axis reflecting STAI.</p>
+</div><div class="column" style="width:33%;">
+<h3 id="pc3-10.8">PC3 (10.8%)</h3>
+<p><strong>Residuals</strong><br>
+Possibly secondary, independent physiological responses.</p>
+</div></div>
 <aside class="notes">
 <ul>
 <li>PCA (Principal Component Analysis): a dimensionality-reduction technique that finds uncorrelated directions (principal components, PCs) of maximum variance in the feature space. PC1 explains the most variance, PC2 the next most, and so on.</li>

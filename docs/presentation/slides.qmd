@@ -431,18 +431,15 @@ Each stage rejects a different failure mode — not a re-test of the same effect
 
 ## Correlation With STAI
 
-::: {.columns}
-::: {.column width="63%"}
-![](../../output/plots/feature_scatter_stai_t.png){width=100%}
-:::
-::: {.column width="37%"}
+<div style="text-align: center;">
+  ![](../../output/plots/feature_scatter_stai_t.png){width=100%}
+</div>
+
 ### Main takeaways
 
-- Strongest observed single-feature association: `pupil_relative_delta`, $\rho \approx 0.38$ with STAI_T 
+- Strongest single-feature association: `pupil_relative_delta`, $\rho \approx 0.38$ with STAI_T 
 - Trait anxiety aligns most clearly with tonic and recovery-related pupil features 
 - Calibration colouring does not explain away the top effects
-:::
-:::
 
 ::: notes
 - ρ (rho) = Spearman rank correlation coefficient. Range −1 to +1. |ρ| ≈ 0.1 = small, |ρ| ≈ 0.3 = moderate, |ρ| ≈ 0.5 = large (Cohen's conventions for behavioural data).
@@ -452,10 +449,12 @@ Each stage rejects a different failure mode — not a re-test of the same effect
 
 ## Permutation Test
 
-![](../../output/plots/permutation_null_stai_t.png){width=94%}
+::: {style="text-align: center;"}
+![](../../output/plots/permutation_null_stai_t.png){width=80%}
 
-::: {.fragment .callout}
+::: {.fragment .callout style="text-align: center; display: block; margin-left: auto; margin-right: auto; width: fit-content;"}
 All six candidates clear $p \le 0.001$ against a 1000-shuffle null — no parametric assumptions.
+:::
 :::
 
 ::: notes
@@ -466,10 +465,26 @@ All six candidates clear $p \le 0.001$ against a 1000-shuffle null — no parame
 
 ## PCA: What Drives Variance
 
-![](../../output/plots/pca_colored.png){width=88% fig-align="center"}
+![](../../output/plots/pca_colored.png){width=100% fig-align="center"}
 
-::: {.fragment .callout style="margin-top:14px;"}
-**PC1** is dominated by data quality. **PC2** is the most STAI-aligned axis. **PC3** carries the residual anxiety signal that PC2 does not. The honest claim: anxiety is the dominant *non-quality* source of variance.
+::: {.columns style="margin-top: 16px; text-align: center; font-size: 0.8em;"}
+::: {.column width="33%"}
+### PC1 (21.8%)
+**System Artifacts**  
+Appears to be driven by hardware calibration and data quality.
+:::
+
+::: {.column width="33%"}
+### PC2 (17.3%)
+**Clinical Signal**  
+Likely isolates the primary physiological axis reflecting STAI.
+:::
+
+::: {.column width="33%"}
+### PC3 (10.8%)
+**Residuals**  
+Possibly secondary, independent physiological responses.
+:::
 :::
 
 ::: notes
