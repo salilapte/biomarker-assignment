@@ -555,22 +555,24 @@ Tracks competing autonomic drives (sympathetic vs parasympathetic) over the 30s 
 
 ## PCA Loadings: Independent Support
 
-::: {.columns}
-::: {.column width="58%"}
-![](../../output/plots/candidate_loadings.png){width=100%}
-:::
-::: {.column width="42%"}
-### Convergent validity
+<div style="width: 80%; margin: 0 auto; overflow: hidden; height: 360px; display: flex; align-items: flex-end;">
+  <img src="../../output/plots/candidate_loadings.png" style="width: 100%; margin-bottom: -10px;">
+</div>
 
-::: {.fragment}
-- The same six features picked by univariate ranking also load on the STAI-aligned PCs
+::: {.columns style="margin-top: 15px; font-size: 0.85em; text-align: center;"}
+::: {.column .fragment width="33%"}
+### <i class="fa-solid fa-arrows-to-eye"></i> Convergent Validity
+The same six candidates from univariate ranking dominate the STAI-aligned PCs.
 :::
-::: {.fragment}
-- Support spreads across PC2 and PC3 — no single clean latent factor, but two converging methods
+
+::: {.column .fragment width="33%"}
+### <i class="fa-solid fa-code-branch"></i> Shared Variance
+Loadings spread across PC2 and PC3 — two supporting factors rather than one clean axis.
 :::
-::: {.fragment}
-- PCA serves as corroboration here, not as the discovery method
-:::
+
+::: {.column .fragment width="33%"}
+### <i class="fa-solid fa-check-double"></i> Corroboration
+PCA acts as an independent structural confirmation, not just a discovery tool.
 :::
 :::
 
