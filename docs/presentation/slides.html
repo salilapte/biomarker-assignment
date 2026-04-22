@@ -310,76 +310,55 @@ Salil Apte
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section>
-<section id="pipeline-data-flow" class="slide level2">
-<h2>Pipeline: Data Flow</h2>
+<!-- 
+## Pipeline: Data Flow
+
+```{=html}
 <div class="flow-grid">
   <div class="flow-node fn-io">
     <div class="fn-title"><i class="fa-solid fa-file-csv"></i> Inputs</div>
     <div class="fn-sub">subjects.csv<br>timeseries.csv</div>
   </div>
-  <div class="flow-arrow">→</div>
+  <div class="flow-arrow">&#8594;</div>
   <div class="flow-node">
     <div class="fn-title"><i class="fa-solid fa-filter"></i> Validation</div>
     <div class="fn-sub">per-sample masks<br>trial quality 0/1/2</div>
   </div>
-  <div class="flow-arrow">→</div>
+  <div class="flow-arrow">&#8594;</div>
   <div class="flow-node">
     <div class="fn-title"><i class="fa-solid fa-wave-square"></i> Features</div>
     <div class="fn-sub">per-trial extraction<br>subject aggregation</div>
   </div>
-  <div class="flow-arrow">→</div>
+  <div class="flow-arrow">&#8594;</div>
   <div class="flow-node">
     <div class="fn-title"><i class="fa-solid fa-magnifying-glass-chart"></i> Selection</div>
     <div class="fn-sub">redundancy removal<br>z-score · PCA</div>
   </div>
-  <div class="flow-arrow">→</div>
+  <div class="flow-arrow">&#8594;</div>
   <div class="flow-node fn-io">
     <div class="fn-title"><i class="fa-solid fa-box-archive"></i> Outputs</div>
     <div class="fn-sub">parquet · CSV<br>plots · summaries</div>
   </div>
 </div>
-<div style="margin-top:18px; font-size:0.82em;">
-<div class="callout callout-none no-icon callout-style-simple">
-<div class="callout-body">
-<div class="callout-content">
-<p><strong>Intermediate caching:</strong> the <code>Features</code> step writes <code>per_trial_feature_catalog.parquet</code> to disk — Selection, PCA, and permutation tests re-run in seconds without re-processing validation.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="pill-row" style="margin-top:10px;">
-<div class="pill">
-~2M rows → 500 subjects
-</div>
-<div class="pill">
-Single-core
-</div>
-<div class="pill">
-&lt; 2 GB RAM
-</div>
-<div class="pill">
-Zero GPU deps
-</div>
-</div>
-<aside class="notes">
-<ul>
-<li>Solid arrows = data transformations (code runs); artifacts written to disk are checkpoints you can inspect or reuse.</li>
-<li>Intermediate caching: per_trial_feature_catalog.parquet is written after feature extraction. This decouples the slow signal-validation step from the fast statistical selection steps, enabling rapid iteration on thresholds and methods.</li>
-<li>Parquet is a compressed columnar file format — faster to read than CSV and preserves data types exactly.</li>
-<li>Compute footprint: the full pipeline processes ~2M time-series rows down to 500 subject-level vectors on a single core in under 2 minutes, using only pandas, scipy, and scikit-learn.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
+```
+
+::: {.callout style="margin-top:18px; font-size:0.82em;"}
+**Intermediate caching:** the `Features` step writes `per_trial_feature_catalog.parquet` to disk — Selection, PCA, and permutation tests re-run in seconds without re-processing validation.
+:::
+
+::: {.pill-row style="margin-top:10px;"}
+<div class="pill">~2M rows → 500 subjects</div>
+<div class="pill">Single-core</div>
+<div class="pill">&lt; 2 GB RAM</div>
+<div class="pill">Zero GPU deps</div>
+:::
+
+::: notes
+- Solid arrows = data transformations (code runs); artifacts written to disk are checkpoints you can inspect or reuse.
+- Intermediate caching: per_trial_feature_catalog.parquet is written after feature extraction. This decouples the slow signal-validation step from the fast statistical selection steps, enabling rapid iteration on thresholds and methods.
+- Parquet is a compressed columnar file format — faster to read than CSV and preserves data types exactly.
+- Compute footprint: the full pipeline processes ~2M time-series rows down to 500 subject-level vectors on a single core in under 2 minutes, using only pandas, scipy, and scikit-learn.
+::: -->
 </section>
 <section id="validation-per-sample-masks" class="slide level2">
 <h2>Validation: Per-Sample Masks</h2>
@@ -400,15 +379,6 @@ Zero GPU deps
     <h3><i class="fa-solid fa-person-running"></i> Motion</h3>
     <p>High motion invalidates all sensors, so the motion mask gates the modality masks.</p>
   </div>
-</div>
-<div class="fragment" style="margin-top:16px;">
-<div class="callout callout-none no-icon callout-style-simple">
-<div class="callout-body">
-<div class="callout-content">
-<p>Validation is deliberately conservative: robust statistics first, feature extraction second.</p>
-</div>
-</div>
-</div>
 </div>
 <aside class="notes">
 <ul>
@@ -466,8 +436,8 @@ q = 0.4 \cdot r_{pupil} + 0.4 \cdot r_{bpm} + 0.2 \cdot r_{gaze}
           display:block!important;
       }</style></aside>
 </section>
-<section id="raw-signals-quality-in-practice" class="slide level2">
-<h2>Raw Signals: Quality In Practice</h2>
+<section id="raw-signal-validation" class="slide level2">
+<h2>Raw Signal Validation</h2>
 <div style="display: flex; justify-content: center; width: 100%;">
   <img src="../../output/plots/raw_signals_quality.png" style="width: 100%; height: auto;">
 </div>
@@ -566,36 +536,31 @@ q = 0.4 \cdot r_{pupil} + 0.4 \cdot r_{bpm} + 0.2 \cdot r_{gaze}
 <div class="pipeline">
   <div class="pipeline-step"><span class="step-num">1</span><span class="step-label">Valid trials per subject</span><span class="step-detail">&nbsp;— up to 10 retained</span></div>
   <div class="pipeline-arrow">↓</div>
-  <div class="pipeline-step"><span class="step-num">2</span><span class="step-label">Per-trial feature extraction</span><span class="step-detail">&nbsp;— 39 features × trial</span></div>
+  <div class="pipeline-step"><span class="step-num">2</span><span class="step-label">Per-trial feature extraction</span><span class="step-detail">&nbsp;— 38 features × trial</span></div>
   <div class="pipeline-arrow">↓</div>
   <div class="pipeline-step"><span class="step-num">3</span><span class="step-label">Median aggregation + IQR</span><span class="step-detail">&nbsp;— robust central + spread</span></div>
   <div class="pipeline-arrow">↓</div>
-  <div class="pipeline-step"><span class="step-num">4</span><span class="step-label">Subject feature set</span><span class="step-detail">&nbsp;— 78 columns (39 + 39)</span></div>
+  <div class="pipeline-step"><span class="step-num">4</span><span class="step-label">Subject feature set</span><span class="step-detail">&nbsp;— 76 columns (38 + 38)</span></div>
   <div class="pipeline-arrow">↓</div>
-  <div class="pipeline-step"><span class="step-num">5</span><span class="step-label">Redundancy removal + quality join</span><span class="step-detail">&nbsp;— 57 remain</span></div>
+  <div class="pipeline-step"><span class="step-num">5</span><span class="step-label">Redundancy removal + quality join</span><span class="step-detail">&nbsp;— 57 remain + 2 quality </span></div>
 </div>
 </div><div class="column" style="width:42%;">
 <h3 id="aggregation-choices">Aggregation choices</h3>
 <div class="fragment">
 <ul>
-<li>Median over trials: robust to one or two borderline-quality trials surviving the mask</li>
+<li>Median over trials: robust to 1 or 2 surviving borderline-quality trials</li>
 </ul>
 </div>
 <div class="fragment">
 <ul>
-<li>IQR preserved: intra-subject instability is itself informative</li>
-</ul>
-</div>
-<div class="fragment">
-<ul>
-<li>Redundancy removal <em>after</em> aggregation, not before — trial-level correlation is not subject-level correlation</li>
+<li>IQR preserved: intra-subject instability may be informative</li>
 </ul>
 </div>
 </div></div>
 <aside class="notes">
 <ul>
-<li>Aggregation flow: 39 per-trial features × up to 10 valid trials per subject → median and IQR computed per feature per subject → 78 subject-level columns (39 medians + 39 IQRs) → redundancy removal leaves 57.</li>
-<li>Median aggregation: for each subject we take the median value of a feature across their valid trials. More robust than the mean when one or two trials are borderline quality.</li>
+<li>Aggregation flow: 38 per-trial features × up to 10 valid trials per subject → median and IQR computed per feature per subject → 78 subject-level columns (39 medians + 39 IQRs) → redundancy removal leaves 57.</li>
+<li>Median aggregation: for each subject we take the median value of a feature across their valid trials. More robust than the mean when 1 or 2 trials are borderline quality.</li>
 <li>IQR (Interquartile Range) = 75th percentile − 25th percentile across trials. Captures how consistent the subject’s response was across trials — a high IQR means the feature was unstable trial-to-trial.</li>
 <li>Redundancy removal: drop features that are near-constant across subjects (no information) or that correlate &gt; 0.9 with another feature (redundant).</li>
 </ul>
@@ -832,45 +797,86 @@ Possibly secondary, independent physiological responses.</p>
 </section>
 <section id="pca-loadings-independent-support" class="slide level2">
 <h2>PCA Loadings: Independent Support</h2>
-<div style="width: 80%; margin: 0 auto 40px auto; overflow: hidden; height: 360px; display: flex; align-items: flex-end;">
+<div style="width: 80%; margin: 0 auto; overflow: hidden; height: 360px; display: flex; align-items: flex-end;">
 <p><img src="../../output/plots/candidate_loadings.png" style="width: 100%; margin-bottom: -10px;"></p>
 </div>
 <div class="columns" style="margin-top: 15px; font-size: 0.85em; text-align: center;">
 <div class="column fragment" style="width:33%;">
 <h3 id="convergent-validity"><i class="fa-solid fa-arrows-to-eye"></i> Convergent Validity</h3>
-<p>The same six candidates from univariate ranking dominate the STAI-aligned PCs.</p>
+<p>Same 6 candidates from univariate ranking dominate the two PCs.</p>
 </div><div class="column fragment" style="width:33%;">
 <h3 id="shared-variance"><i class="fa-solid fa-code-branch"></i> Shared Variance</h3>
-<p>Loadings spread across PC2 and PC3 — two supporting factors rather than one clean axis.</p>
+<p>Loadings spread across PC2 and PC3, two supporting factors.</p>
 </div><div class="column fragment" style="width:33%;">
 <h3 id="corroboration"><i class="fa-solid fa-check-double"></i> Corroboration</h3>
-<p>PCA acts as an independent structural confirmation, not just a discovery tool.</p>
+<p>PCA acts as an independent structural confirmation tool.</p>
 </div></div>
 </section>
-<section id="pipeline-code-architecture" class="slide level2">
-<h2>Pipeline: Code Architecture</h2>
-<div style="display:grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap:10px; align-items:center; font-size:0.6em; margin:10px 0;">
-  <div>
-    <div style="font-weight:700; color:var(--accent); margin-bottom:6px;">Entry points</div>
-    <div class="pipeline-step"><span class="step-label">main.py</span><span class="step-detail">— CLI</span></div>
-    <div class="pipeline-step"><span class="step-label">analysis.ipynb</span><span class="step-detail">— exploration</span></div>
-    <div class="pipeline-step"><span class="step-label">FastAPI wrapper</span><span class="step-detail">— future</span></div>
+<section id="code-architecture" class="slide level2">
+<h2>Code Architecture</h2>
+<div style="display: flex; flex-direction: column; align-items: stretch; gap: 8px; font-size: 0.65em; margin: 10px 0;">
+  
+  <!-- Top Layer: Interfaces & Config -->
+  <div style="display: flex; justify-content: center; gap: 15px;">
+    <div style="background: #f8f9fa; border: 1px solid #ddd; padding: 8px 14px; border-radius: 8px; color: #2d3748; font-weight: 600;">
+      <i class="fa-solid fa-terminal" style="color:#6b7a8d;"></i> <code>main.py</code>
+    </div>
+    <div style="background: #f8f9fa; border: 1px solid #ddd; padding: 8px 14px; border-radius: 8px; color: #2d3748; font-weight: 600;">
+      <i class="fa-solid fa-book" style="color:#6b7a8d;"></i> <code>analysis.ipynb</code>
+    </div>
+    <div style="background: #f8f9fa; border: 1px solid #ddd; padding: 8px 14px; border-radius: 8px; color: #2d3748; font-weight: 600;">
+      <i class="fa-solid fa-sliders" style="color:#6b7a8d;"></i> <code>constants.py</code>
+    </div>
   </div>
-  <div style="text-align:center; color:var(--accent); font-size:1.4em;">→</div>
-  <div>
-    <div style="font-weight:700; color:var(--accent); margin-bottom:6px;">Orchestration</div>
-    <div class="pipeline-step"><span class="step-label">pipeline.py</span><span class="step-detail">— run_preprocessing / run_analysis</span></div>
-    <div style="margin-top:10px; font-weight:700; color:var(--accent); margin-bottom:6px;">Configuration</div>
-    <div class="pipeline-step"><span class="step-label">constants.py</span><span class="step-detail">— thresholds, weights</span></div>
+
+  <div style="text-align: center; color: var(--accent); font-size: 1.4em; line-height: 0.4; margin-bottom: 8px;">↓</div>
+
+  <!-- Middle Layer: Preprocessing (Teal) -->
+  <div style="background: rgba(27, 107, 115, 0.04); border: 2px solid var(--accent); border-radius: 10px; padding: 12px 16px; margin: 0 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <div style="font-weight: 700; color: var(--accent); font-size: 1.1em; margin-bottom: 2px;">
+          <i class="fa-solid fa-filter"></i> Phase 1: Preprocessing Pipeline
+        </div>
+        <div style="color: #4a5568; margin-bottom: 6px; font-family: monospace; font-size: 0.9em;">pipeline.py → run_preprocessing()</div>
+        <div style="display: flex; gap: 6px; font-size: 0.85em;">
+          <span style="background:#fff; border:1px solid #cbd5e0; padding:2px 6px; border-radius:4px;"><i class="fa-solid fa-check-circle" style="color:var(--accent);"></i> validation.py</span>
+          <span style="background:#fff; border:1px solid #cbd5e0; padding:2px 6px; border-radius:4px;"><i class="fa-solid fa-wave-square" style="color:var(--accent);"></i> features.py</span>
+        </div>
+      </div>
+      <div style="text-align: right; background: #fff; padding: 6px 10px; border-radius: 6px; border: 1px dashed var(--accent);">
+        <div style="font-weight: 700; color: var(--accent); font-size: 0.85em; margin-bottom: 2px;">Outputs</div>
+        <div style="color: #2d3748; font-family: monospace; font-size: 0.85em;">features.parquet</div>
+        <div style="color: #2d3748; font-family: monospace; font-size: 0.85em;">subjects.parquet</div>
+        <div style="color: #718096; font-size: 0.75em; margin-top: 3px;"><i class="fa-solid fa-file-csv"></i> Doc: feature_catalog</div>
+      </div>
+    </div>
   </div>
-  <div style="text-align:center; color:var(--accent); font-size:1.4em;">→</div>
-  <div>
-    <div style="font-weight:700; color:var(--accent); margin-bottom:6px;">Core modules</div>
-    <div class="pipeline-step"><span class="step-label">validation.py</span></div>
-    <div class="pipeline-step"><span class="step-label">features.py</span></div>
-    <div class="pipeline-step"><span class="step-label">selection.py</span></div>
-    <div class="pipeline-step"><span class="step-label">plotting.py</span></div>
+
+  <div style="text-align: center; color: #805ad5; font-size: 1.4em; line-height: 0.4; margin-bottom: 8px;">↓</div>
+
+  <!-- Bottom Layer: Analysis (Purple) -->
+  <div style="background: rgba(128, 90, 213, 0.04); border: 2px solid #805ad5; border-radius: 10px; padding: 12px 16px; margin: 0 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <div style="font-weight: 700; color: #805ad5; font-size: 1.1em; margin-bottom: 2px;">
+          <i class="fa-solid fa-chart-line"></i> Phase 2: Analysis Pipeline
+        </div>
+        <div style="color: #4a5568; margin-bottom: 6px; font-family: monospace; font-size: 0.9em;">pipeline.py → run_analysis()</div>
+        <div style="display: flex; gap: 6px; font-size: 0.85em;">
+          <span style="background:#fff; border:1px solid #cbd5e0; padding:2px 6px; border-radius:4px;"><i class="fa-solid fa-object-group" style="color:#805ad5;"></i> selection.py</span>
+          <span style="background:#fff; border:1px solid #cbd5e0; padding:2px 6px; border-radius:4px;"><i class="fa-solid fa-chart-area" style="color:#805ad5;"></i> plotting.py</span>
+        </div>
+      </div>
+      <div style="text-align: right; background: #fff; padding: 6px 10px; border-radius: 6px; border: 1px dashed #805ad5;">
+        <div style="font-weight: 700; color: #805ad5; font-size: 0.85em; margin-bottom: 2px;">Outputs</div>
+        <div style="color: #2d3748; font-family: monospace; font-size: 0.85em;">zscore_params.csv</div>
+        <div style="color: #2d3748; font-family: monospace; font-size: 0.85em;">loadings_summary.csv</div>
+        <div style="color: #718096; font-size: 0.75em; margin-top: 3px;"><i class="fa-solid fa-image"></i> Diagnostic Plots</div>
+      </div>
+    </div>
   </div>
+
 </div>
 <div class="fragment" style="margin-top:14px;">
 <div class="callout callout-none no-icon callout-style-simple">
@@ -883,10 +889,10 @@ Possibly secondary, independent physiological responses.</p>
 </div>
 <aside class="notes">
 <ul>
-<li>CLI and notebook share the same core modules; the notebook bypasses <code>pipeline.py</code> for finer control during exploration.</li>
-<li>A FastAPI wrapper is a thin layer over <code>pipeline.py</code>, not a rewrite — this is what makes the backend conversation credible.</li>
-<li><code>constants.py</code> localises thresholds and weights, so re-tuning a parameter does not require hunting through modules.</li>
-<li>Deliberately avoiding heavy ML frameworks keeps the dependency surface small — important for regulated products where every dependency must be validated and pinned.</li>
+<li>The pipeline is explicitly decoupled into two phases, preparing it for production scaling.</li>
+<li>Phase 1 (Preprocessing) isolates feature extraction. It generates the core parquet datasets, which scales horizontally per user session.</li>
+<li>Phase 2 (Analysis) standardizes the data and generates our baseline metrics (z-scores, PCA weights).</li>
+<li>The feature catalog acts as living documentation, while <code>constants.py</code> centralizes all tunables.</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -900,82 +906,100 @@ Possibly secondary, independent physiological responses.</p>
           display:block!important;
       }</style></aside>
 </section>
-<section id="production-architecture" class="slide level2">
-<h2>Production Architecture</h2>
-<div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
-<div>
-<div class="flow-step fragment">
-  <div class="fs-num">1</div>
-  <div class="fs-body">
-    <div class="fs-title"><i class="fa-solid fa-cloud-arrow-up"></i> Ingestion</div>
-    <div class="fs-detail">POST /ingest-session — schema-validated upload from VR client</div>
-    <div class="fs-tools"><span class="tool-tag">FastAPI</span><span class="tool-tag">Pydantic</span><span class="tool-tag">JWT auth</span></div>
+<section id="deployment-considerations" class="slide level2">
+<h2>Deployment Considerations</h2>
+<div style="display: flex; flex-direction: column; align-items: stretch; gap: 8px; font-size: 0.65em; margin: 10px auto; max-width: 800px;">
+
+  <!-- Data Arrival & Storage Phase (Neutral) -->
+  <div class="fragment" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+    <div style="background: #f8f9fa; border: 1px solid #ddd; padding: 10px 14px; border-radius: 8px;">
+      <div style="font-weight: 700; color: #2d3748; margin-bottom: 4px; font-size: 1.05em;"><i class="fa-solid fa-cloud-arrow-up"></i> Data Arrival</div>
+      <div style="color: #4a5568; line-height: 1.3;">Receive new VR session data and validate structure.</div>
+      <div style="margin-top: 8px;"><span class="tool-tag" style="background:#e2e8f0; color:#4a5568; border-color:#cbd5e0;">Pydantic</span></div>
+    </div>
+    <div style="background: #f8f9fa; border: 1px solid #ddd; padding: 10px 14px; border-radius: 8px;">
+      <div style="font-weight: 700; color: #2d3748; margin-bottom: 4px; font-size: 1.05em;"><i class="fa-solid fa-database"></i> Secure Storage</div>
+      <div style="color: #4a5568; line-height: 1.3;">Save raw timeseries and version datasets.</div>
+      <div style="margin-top: 8px;"><span class="tool-tag" style="background:#e2e8f0; color:#4a5568; border-color:#cbd5e0;">Google Cloud</span><span class="tool-tag" style="background:#e2e8f0; color:#4a5568; border-color:#cbd5e0;">DVC</span></div>
+    </div>
   </div>
-</div>
-<div class="flow-arrow-v">↓</div>
-<div class="flow-step fragment">
-  <div class="fs-num">2</div>
-  <div class="fs-body">
-    <div class="fs-title"><i class="fa-solid fa-database"></i> Storage</div>
-    <div class="fs-detail">Raw timeseries, subject metadata, processing logs</div>
-    <div class="fs-tools"><span class="tool-tag">S3</span><span class="tool-tag">PostgreSQL</span><span class="tool-tag">Parquet</span></div>
+
+  <!-- Arrow + Extraction Phase (grouped fragment) -->
+  <div class="fragment">
+    <div style="text-align: center; color: var(--accent); font-size: 1.2em; line-height: 0.5; margin-bottom: 8px;">↓</div>
+    <!-- Extraction Phase (Teal - matches Phase 1) -->
+    <div style="background: rgba(27, 107, 115, 0.04); border: 2px solid var(--accent); border-radius: 10px; padding: 12px 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-weight: 700; color: var(--accent); font-size: 1.1em; margin-bottom: 2px;"><i class="fa-solid fa-gears"></i> Feature Extraction</div>
+          <div style="color: #4a5568;">Run the exact same Python pipeline to extract metrics.</div>
+        </div>
+        <div style="text-align: right;">
+          <span class="tool-tag">Docker</span><span class="tool-tag">src/pipeline.py</span>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<div class="flow-arrow-v">↓</div>
-<div class="flow-step fragment">
-  <div class="fs-num">3</div>
-  <div class="fs-body">
-    <div class="fs-title"><i class="fa-solid fa-gears"></i> Async processing</div>
-    <div class="fs-detail">Job queue → worker calls run_preprocessing(): validate → score trials → features → aggregate</div>
-    <div class="fs-tools"><span class="tool-tag">Celery / RQ</span><span class="tool-tag">Redis</span><span class="tool-tag">src/pipeline.py</span></div>
+
+  <!-- Arrow + Scoring & Delivery Phase (grouped fragment) -->
+  <div class="fragment">
+    <div style="text-align: center; color: #805ad5; font-size: 1.2em; line-height: 0.5; margin-bottom: 8px;">↓</div>
+    <!-- Scoring & Delivery Phase (Purple - matches Phase 2) -->
+    <div style="background: rgba(128, 90, 213, 0.04); border: 2px solid #805ad5; border-radius: 10px; padding: 12px 16px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+         <div>
+           <div style="font-weight: 700; color: #805ad5; font-size: 1.1em; margin-bottom: 2px;"><i class="fa-solid fa-chart-bar"></i> Inference &amp; Scoring</div>
+           <div style="color: #4a5568; margin-bottom: 8px;">Apply frozen training Z-scores &amp; PCA loadings to new trials.</div>
+           <span class="tool-tag" style="color:#805ad5; background:rgba(128,90,213,0.1); border-color:rgba(128,90,213,0.2);">MLflow</span>
+           <span class="tool-tag" style="color:#805ad5; background:rgba(128,90,213,0.1); border-color:rgba(128,90,213,0.2);">scikit-learn</span>
+         </div>
+         <div style="border-left: 1px dashed rgba(128, 90, 213, 0.3); padding-left: 15px;">
+           <div style="font-weight: 700; color: #805ad5; font-size: 1.1em; margin-bottom: 2px;"><i class="fa-solid fa-server"></i> Results Delivered</div>
+           <div style="color: #4a5568; margin-bottom: 8px;">Return final biomarker scores via API.</div>
+           <span class="tool-tag" style="color:#805ad5; background:rgba(128,90,213,0.1); border-color:rgba(128,90,213,0.2);">FastAPI</span>
+           <span class="tool-tag" style="color:#805ad5; background:rgba(128,90,213,0.1); border-color:rgba(128,90,213,0.2);">Postman</span>
+         </div>
+      </div>
+    </div>
   </div>
-</div>
-</div>
-<div>
-<div class="flow-step fragment">
-  <div class="fs-num">4</div>
-  <div class="fs-body">
-    <div class="fs-title"><i class="fa-solid fa-chart-bar"></i> Analysis &amp; scoring</div>
-    <div class="fs-detail">run_analysis() applies frozen z-score parameters from training cohort</div>
-    <div class="fs-tools"><span class="tool-tag">zscore_params.csv</span><span class="tool-tag">scikit-learn</span><span class="tool-tag">feature store</span></div>
+
+  <!-- Arrow + Monitoring Phase (grouped fragment) -->
+  <div class="fragment">
+    <div style="text-align: center; color: #6b7a8d; font-size: 1.2em; line-height: 0.5; margin-bottom: 8px;">↓</div>
+    <!-- Monitoring Phase (Dark Grey) -->
+    <div style="background: #f8f9fa; border: 2px solid #6b7a8d; border-radius: 10px; padding: 12px 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-weight: 700; color: #4a5568; font-size: 1.1em; margin-bottom: 2px;"><i class="fa-solid fa-bell"></i> Model Monitoring</div>
+          <div style="color: #718096;">Track feature drift and trigger pipeline tests on schedule.</div>
+        </div>
+        <div style="text-align: right;">
+          <span class="tool-tag" style="color:#4a5568; background:#e2e8f0; border-color:#cbd5e0;">GitHub Actions</span>
+          <span class="tool-tag" style="color:#4a5568; background:#e2e8f0; border-color:#cbd5e0;">Cloud Logging</span>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<div class="flow-arrow-v">↓</div>
-<div class="flow-step fragment">
-  <div class="fs-num">5</div>
-  <div class="fs-body">
-    <div class="fs-title"><i class="fa-solid fa-server"></i> Serving</div>
-    <div class="fs-detail">GET /subject-features/{id} · GET /quality-report/{id}</div>
-    <div class="fs-tools"><span class="tool-tag">FastAPI</span><span class="tool-tag">cached results</span></div>
-  </div>
-</div>
-<div class="flow-arrow-v">↓</div>
-<div class="flow-step fragment">
-  <div class="fs-num">6</div>
-  <div class="fs-body">
-    <div class="fs-title"><i class="fa-solid fa-bell"></i> Monitoring</div>
-    <div class="fs-detail">Signal-quality drift, feature drift, failure rate by device cohort</div>
-    <div class="fs-tools"><span class="tool-tag">Prometheus</span><span class="tool-tag">Grafana</span><span class="tool-tag">alerts</span></div>
-  </div>
-</div>
-</div>
+
 </div>
 <div class="fragment" style="margin-top:14px;">
 <div class="callout callout-none no-icon callout-style-simple">
 <div class="callout-body">
 <div class="callout-content">
-<p><strong>Already separable.</strong> <code>run_preprocessing()</code> and <code>run_analysis()</code> in <code>src/pipeline.py</code> map directly onto stages 3–4 — the API is a thin wrapper, not a rewrite. Saved <code>zscore_params.csv</code> lets new subjects be scored against the training distribution without recomputing on the full cohort.</p>
+<p><strong>Seamless Translation:</strong> Steps 3 &amp; 4 use <code>src/pipeline.py</code>. My focus as a Data Scientist is ensuring deployed logic matches offline validation, while leveraging tools I know to help bridge the MLOps gap.</p>
 </div>
 </div>
 </div>
 </div>
 <aside class="notes">
 <ul>
-<li>Ingestion separates I/O bound work from compute. Pydantic validates schema and ranges before the worker spins up.</li>
-<li>Storage layer: S3 for raw timeseries (cheap, large), PostgreSQL for subject metadata and job state, Parquet feature store for downstream queries.</li>
-<li>Async processing keeps the API responsive: a 30 s upload returns instantly with a job ID; the worker pool handles the heavy lifting.</li>
-<li>Frozen z-score params are the key to incremental scoring — new cohorts do not change the standardisation, so per-subject scores remain comparable across releases.</li>
-<li>Monitoring closes the loop: drift in signal quality, feature distributions, or failure rates by device triggers alerts before the next regulated release.</li>
+<li>I want to highlight the stack I actually work with to bridge the gap to production.</li>
+<li>Pydantic ensures the payloads I get match what my pipeline expects.</li>
+<li>DVC versions my datasets on Google Cloud so my experiments are reproducible.</li>
+<li>I can use Docker to containerize the exact environment my code needs.</li>
+<li>MLflow logs my models and parameters, keeping my registry clean.</li>
+<li>I test the FastAPI endpoints with Postman, and rely on GitHub actions for automated CI/CD checks.</li>
+<li>I don’t pretend to be the infra engineer, but I know how to package my work so they can use it.</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {

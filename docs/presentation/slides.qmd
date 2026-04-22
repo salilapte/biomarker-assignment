@@ -168,7 +168,7 @@ format:
 - STAI_S = State Anxiety Inventory — how anxious the person feels *right now*. STAI_T = Trait Anxiety Inventory — how anxious they tend to feel *in general*. Both are self-report questionnaires scored 20–80.
 - "Self-report is noisy" means two people with the same physiology can give different scores depending on mood, introspection ability, or survey fatigue — hence why robustness checks matter more here.
 :::
-
+<!-- 
 ## Pipeline: Data Flow
 
 ```{=html}
@@ -216,7 +216,7 @@ format:
 - Intermediate caching: per_trial_feature_catalog.parquet is written after feature extraction. This decouples the slow signal-validation step from the fast statistical selection steps, enabling rapid iteration on thresholds and methods.
 - Parquet is a compressed columnar file format — faster to read than CSV and preserves data types exactly.
 - Compute footprint: the full pipeline processes ~2M time-series rows down to 500 subject-level vectors on a single core in under 2 minutes, using only pandas, scipy, and scikit-learn.
-:::
+::: -->
 
 ## Validation: Per-Sample Masks
 
@@ -240,10 +240,6 @@ format:
   </div>
 </div>
 ```
-
-::: {.fragment .callout style="margin-top:16px;"}
-Validation is deliberately conservative: robust statistics first, feature extraction second.
-:::
 
 ::: notes
 - MAD = Median Absolute Deviation. It measures spread like standard deviation but is not distorted by extreme outliers. Formula: MAD = median(|x_i − median(x)|). A sample is rejected if it falls more than k×MAD from the median. This is much more stable than mean ± k×std when the signal contains blink artifacts or motion spikes.
@@ -285,7 +281,7 @@ where each $r$ is the valid-sample ratio for that modality within a trial.
 - Confounder = a variable that correlates with both the feature and the target (STAI), creating a spurious association. Calibration and demographics are the main confounders tested here.
 :::
 
-## Raw Signals: Quality In Practice
+## Raw Signal Validation
 
 ```{=html}
 <div style="display: flex; justify-content: center; width: 100%;">
@@ -366,13 +362,13 @@ where each $r$ is the valid-sample ratio for that modality within a trial.
 <div class="pipeline">
   <div class="pipeline-step"><span class="step-num">1</span><span class="step-label">Valid trials per subject</span><span class="step-detail">&nbsp;— up to 10 retained</span></div>
   <div class="pipeline-arrow">&#8595;</div>
-  <div class="pipeline-step"><span class="step-num">2</span><span class="step-label">Per-trial feature extraction</span><span class="step-detail">&nbsp;— 39 features × trial</span></div>
+  <div class="pipeline-step"><span class="step-num">2</span><span class="step-label">Per-trial feature extraction</span><span class="step-detail">&nbsp;— 38 features × trial</span></div>
   <div class="pipeline-arrow">&#8595;</div>
   <div class="pipeline-step"><span class="step-num">3</span><span class="step-label">Median aggregation + IQR</span><span class="step-detail">&nbsp;— robust central + spread</span></div>
   <div class="pipeline-arrow">&#8595;</div>
-  <div class="pipeline-step"><span class="step-num">4</span><span class="step-label">Subject feature set</span><span class="step-detail">&nbsp;— 78 columns (39 + 39)</span></div>
+  <div class="pipeline-step"><span class="step-num">4</span><span class="step-label">Subject feature set</span><span class="step-detail">&nbsp;— 76 columns (38 + 38)</span></div>
   <div class="pipeline-arrow">&#8595;</div>
-  <div class="pipeline-step"><span class="step-num">5</span><span class="step-label">Redundancy removal + quality join</span><span class="step-detail">&nbsp;— 57 remain</span></div>
+  <div class="pipeline-step"><span class="step-num">5</span><span class="step-label">Redundancy removal + quality join</span><span class="step-detail">&nbsp;— 57 remain + 2 quality </span></div>
 </div>
 ```
 :::
@@ -380,20 +376,17 @@ where each $r$ is the valid-sample ratio for that modality within a trial.
 ### Aggregation choices
 
 ::: {.fragment}
-- Median over trials: robust to one or two borderline-quality trials surviving the mask
+- Median over trials: robust to 1 or 2 surviving borderline-quality trials
 :::
 ::: {.fragment}
-- IQR preserved: intra-subject instability is itself informative
-:::
-::: {.fragment}
-- Redundancy removal *after* aggregation, not before — trial-level correlation is not subject-level correlation
+- IQR preserved: intra-subject instability may be informative
 :::
 :::
 :::
 
 ::: notes
-- Aggregation flow: 39 per-trial features × up to 10 valid trials per subject → median and IQR computed per feature per subject → 78 subject-level columns (39 medians + 39 IQRs) → redundancy removal leaves 57.
-- Median aggregation: for each subject we take the median value of a feature across their valid trials. More robust than the mean when one or two trials are borderline quality.
+- Aggregation flow: 38 per-trial features × up to 10 valid trials per subject → median and IQR computed per feature per subject → 78 subject-level columns (39 medians + 39 IQRs) → redundancy removal leaves 57.
+- Median aggregation: for each subject we take the median value of a feature across their valid trials. More robust than the mean when 1 or 2 trials are borderline quality.
 - IQR (Interquartile Range) = 75th percentile − 25th percentile across trials. Captures how consistent the subject's response was across trials — a high IQR means the feature was unstable trial-to-trial.
 - Redundancy removal: drop features that are near-constant across subjects (no information) or that correlate > 0.9 with another feature (redundant).
 :::
@@ -562,45 +555,126 @@ Tracks competing autonomic drives (sympathetic vs parasympathetic) over the 30s 
 ::: {.columns style="margin-top: 15px; font-size: 0.85em; text-align: center;"}
 ::: {.column .fragment width="33%"}
 ### <i class="fa-solid fa-arrows-to-eye"></i> Convergent Validity
-The same six candidates from univariate ranking dominate the STAI-aligned PCs.
+Same 6 candidates from univariate ranking dominate the two PCs.
 :::
 
 ::: {.column .fragment width="33%"}
 ### <i class="fa-solid fa-code-branch"></i> Shared Variance
-Loadings spread across PC2 and PC3 — two supporting factors rather than one clean axis.
+Loadings spread across PC2 and PC3, two supporting factors.
 :::
 
 ::: {.column .fragment width="33%"}
 ### <i class="fa-solid fa-check-double"></i> Corroboration
-PCA acts as an independent structural confirmation, not just a discovery tool.
+PCA acts as an independent structural confirmation tool.
 :::
 :::
 
-## Pipeline: Code Architecture
+
+## Limitations & Next Steps
 
 ```{=html}
-<div style="display:grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap:10px; align-items:center; font-size:0.6em; margin:10px 0;">
-  <div>
-    <div style="font-weight:700; color:var(--accent); margin-bottom:6px;">Entry points</div>
-    <div class="pipeline-step"><span class="step-label">main.py</span><span class="step-detail">— CLI</span></div>
-    <div class="pipeline-step"><span class="step-label">analysis.ipynb</span><span class="step-detail">— exploration</span></div>
-    <div class="pipeline-step"><span class="step-label">FastAPI wrapper</span><span class="step-detail">— future</span></div>
+<div class="card-grid">
+  <div class="card fragment">
+    <h3><i class="fa-solid fa-chart-pie"></i> Effect-size ceiling</h3>
+    <p>Single-feature ρ ≈ 0.4 against a self-report target is at the upper end of what is typical. Honest scope, not a flaw to fix.</p>
   </div>
-  <div style="text-align:center; color:var(--accent); font-size:1.4em;">&#8594;</div>
-  <div>
-    <div style="font-weight:700; color:var(--accent); margin-bottom:6px;">Orchestration</div>
-    <div class="pipeline-step"><span class="step-label">pipeline.py</span><span class="step-detail">— run_preprocessing / run_analysis</span></div>
-    <div style="margin-top:10px; font-weight:700; color:var(--accent); margin-bottom:6px;">Configuration</div>
-    <div class="pipeline-step"><span class="step-label">constants.py</span><span class="step-detail">— thresholds, weights</span></div>
+  <div class="card fragment">
+    <h3><i class="fa-solid fa-heart-crack"></i> BPM under-delivered</h3>
+    <p>VR PPG is motion-sensitive; cardiac features did not survive robustness checks. Better optical placement or ECG would change this.</p>
   </div>
-  <div style="text-align:center; color:var(--accent); font-size:1.4em;">&#8594;</div>
-  <div>
-    <div style="font-weight:700; color:var(--accent); margin-bottom:6px;">Core modules</div>
-    <div class="pipeline-step"><span class="step-label">validation.py</span></div>
-    <div class="pipeline-step"><span class="step-label">features.py</span></div>
-    <div class="pipeline-step"><span class="step-label">selection.py</span></div>
-    <div class="pipeline-step"><span class="step-label">plotting.py</span></div>
+  <div class="card fragment">
+    <h3><i class="fa-solid fa-brain"></i> No predictive model yet</h3>
+    <p>Next step: elastic-net regression with nested cross-validation to build a parsimonious multivariate index and honest generalisation estimates.</p>
   </div>
+  <div class="card fragment">
+    <h3><i class="fa-solid fa-arrow-trend-down"></i> Habituation unmodelled</h3>
+    <p>Trial 1 differs from trial 10 as subjects acclimate. A mixed-effects model with trial index would isolate this variance.</p>
+  </div>
+  <div class="card fragment">
+    <h3><i class="fa-solid fa-users-viewfinder"></i> Responder subtypes unexplored</h3>
+    <p>Density-based clustering (HDBSCAN) or hierarchical clustering could reveal physiological responder subtypes without forcing artificial partitions on a continuous distribution.</p>
+  </div>
+  <div class="card fragment">
+    <h3><i class="fa-solid fa-arrow-right-arrow-left"></i> Cross-cohort validation</h3>
+    <p>The frozen z-score params are designed for incremental scoring. They need a held-out cohort to confirm generalisation.</p>
+  </div>
+</div>
+```
+
+::: notes
+- Frame the limitations as scope choices, not failures. The audience will respect honesty about ceiling effects more than oversold claims.
+- Elastic-net + nested CV: elastic-net combines L1 (feature selection) and L2 (shrinkage) penalties for a parsimonious model; nested CV ensures the performance estimate is not contaminated by the hyperparameter search.
+- HDBSCAN is preferred over K-Means or UMAP because it does not force a fixed number of clusters and handles noise natively — important for a continuous physiological distribution where artificial partitioning would be misleading.
+- Habituation modelling is the most concrete next methodological step; mixed-effects with trial index would change the picture for tonic features that drift across the session.
+- Cross-cohort validation is the gating item before any clinical or product claim.
+:::
+
+## Code Architecture
+
+```{=html}
+<div style="display: flex; flex-direction: column; align-items: stretch; gap: 8px; font-size: 0.65em; margin: 10px 0;">
+  
+  <!-- Top Layer: Interfaces & Config -->
+  <div style="display: flex; justify-content: center; gap: 15px;">
+    <div style="background: #f8f9fa; border: 1px solid #ddd; padding: 8px 14px; border-radius: 8px; color: #2d3748; font-weight: 600;">
+      <i class="fa-solid fa-terminal" style="color:#6b7a8d;"></i> <code>main.py</code>
+    </div>
+    <div style="background: #f8f9fa; border: 1px solid #ddd; padding: 8px 14px; border-radius: 8px; color: #2d3748; font-weight: 600;">
+      <i class="fa-solid fa-book" style="color:#6b7a8d;"></i> <code>analysis.ipynb</code>
+    </div>
+    <div style="background: #f8f9fa; border: 1px solid #ddd; padding: 8px 14px; border-radius: 8px; color: #2d3748; font-weight: 600;">
+      <i class="fa-solid fa-sliders" style="color:#6b7a8d;"></i> <code>constants.py</code>
+    </div>
+  </div>
+
+  <div style="text-align: center; color: var(--accent); font-size: 1.4em; line-height: 0.4; margin-bottom: 8px;">&#8595;</div>
+
+  <!-- Middle Layer: Preprocessing (Teal) -->
+  <div style="background: rgba(27, 107, 115, 0.04); border: 2px solid var(--accent); border-radius: 10px; padding: 12px 16px; margin: 0 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <div style="font-weight: 700; color: var(--accent); font-size: 1.1em; margin-bottom: 2px;">
+          <i class="fa-solid fa-filter"></i> Phase 1: Preprocessing Pipeline
+        </div>
+        <div style="color: #4a5568; margin-bottom: 6px; font-family: monospace; font-size: 0.9em;">pipeline.py &rarr; run_preprocessing()</div>
+        <div style="display: flex; gap: 6px; font-size: 0.85em;">
+          <span style="background:#fff; border:1px solid #cbd5e0; padding:2px 6px; border-radius:4px;"><i class="fa-solid fa-check-circle" style="color:var(--accent);"></i> validation.py</span>
+          <span style="background:#fff; border:1px solid #cbd5e0; padding:2px 6px; border-radius:4px;"><i class="fa-solid fa-wave-square" style="color:var(--accent);"></i> features.py</span>
+        </div>
+      </div>
+      <div style="text-align: right; background: #fff; padding: 6px 10px; border-radius: 6px; border: 1px dashed var(--accent);">
+        <div style="font-weight: 700; color: var(--accent); font-size: 0.85em; margin-bottom: 2px;">Outputs</div>
+        <div style="color: #2d3748; font-family: monospace; font-size: 0.85em;">features.parquet</div>
+        <div style="color: #2d3748; font-family: monospace; font-size: 0.85em;">subjects.parquet</div>
+        <div style="color: #718096; font-size: 0.75em; margin-top: 3px;"><i class="fa-solid fa-file-csv"></i> Doc: feature_catalog</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align: center; color: #805ad5; font-size: 1.4em; line-height: 0.4; margin-bottom: 8px;">&#8595;</div>
+
+  <!-- Bottom Layer: Analysis (Purple) -->
+  <div style="background: rgba(128, 90, 213, 0.04); border: 2px solid #805ad5; border-radius: 10px; padding: 12px 16px; margin: 0 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <div style="font-weight: 700; color: #805ad5; font-size: 1.1em; margin-bottom: 2px;">
+          <i class="fa-solid fa-chart-line"></i> Phase 2: Analysis Pipeline
+        </div>
+        <div style="color: #4a5568; margin-bottom: 6px; font-family: monospace; font-size: 0.9em;">pipeline.py &rarr; run_analysis()</div>
+        <div style="display: flex; gap: 6px; font-size: 0.85em;">
+          <span style="background:#fff; border:1px solid #cbd5e0; padding:2px 6px; border-radius:4px;"><i class="fa-solid fa-object-group" style="color:#805ad5;"></i> selection.py</span>
+          <span style="background:#fff; border:1px solid #cbd5e0; padding:2px 6px; border-radius:4px;"><i class="fa-solid fa-chart-area" style="color:#805ad5;"></i> plotting.py</span>
+        </div>
+      </div>
+      <div style="text-align: right; background: #fff; padding: 6px 10px; border-radius: 6px; border: 1px dashed #805ad5;">
+        <div style="font-weight: 700; color: #805ad5; font-size: 0.85em; margin-bottom: 2px;">Outputs</div>
+        <div style="color: #2d3748; font-family: monospace; font-size: 0.85em;">zscore_params.csv</div>
+        <div style="color: #2d3748; font-family: monospace; font-size: 0.85em;">loadings_summary.csv</div>
+        <div style="color: #718096; font-size: 0.75em; margin-top: 3px;"><i class="fa-solid fa-image"></i> Diagnostic Plots</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 ```
 
@@ -609,85 +683,103 @@ Intentionally lightweight: pandas, scipy, scikit-learn — no deep-learning depe
 :::
 
 ::: notes
-- CLI and notebook share the same core modules; the notebook bypasses `pipeline.py` for finer control during exploration.
-- A FastAPI wrapper is a thin layer over `pipeline.py`, not a rewrite — this is what makes the backend conversation credible.
-- `constants.py` localises thresholds and weights, so re-tuning a parameter does not require hunting through modules.
-- Deliberately avoiding heavy ML frameworks keeps the dependency surface small — important for regulated products where every dependency must be validated and pinned.
+- The pipeline is explicitly decoupled into two phases, preparing it for production scaling.
+- Phase 1 (Preprocessing) isolates feature extraction. It generates the core parquet datasets, which scales horizontally per user session.
+- Phase 2 (Analysis) standardizes the data and generates our baseline metrics (z-scores, PCA weights).
+- The feature catalog acts as living documentation, while `constants.py` centralizes all tunables.
 :::
 
-## Production Architecture
+## Deployment Considerations
 
 ```{=html}
-<div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
-<div>
-<div class="flow-step fragment">
-  <div class="fs-num">1</div>
-  <div class="fs-body">
-    <div class="fs-title"><i class="fa-solid fa-cloud-arrow-up"></i> Ingestion</div>
-    <div class="fs-detail">POST /ingest-session — schema-validated upload from VR client</div>
-    <div class="fs-tools"><span class="tool-tag">FastAPI</span><span class="tool-tag">Pydantic</span><span class="tool-tag">JWT auth</span></div>
+<div style="display: flex; flex-direction: column; align-items: stretch; gap: 8px; font-size: 0.65em; margin: 10px auto; max-width: 800px;">
+
+  <!-- Data Arrival & Storage Phase (Neutral) -->
+  <div class="fragment" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+    <div style="background: #f8f9fa; border: 1px solid #ddd; padding: 10px 14px; border-radius: 8px;">
+      <div style="font-weight: 700; color: #2d3748; margin-bottom: 4px; font-size: 1.05em;"><i class="fa-solid fa-cloud-arrow-up"></i> Data Arrival</div>
+      <div style="color: #4a5568; line-height: 1.3;">Receive new VR session data and validate structure.</div>
+      <div style="margin-top: 8px;"><span class="tool-tag" style="background:#e2e8f0; color:#4a5568; border-color:#cbd5e0;">Pydantic</span></div>
+    </div>
+    <div style="background: #f8f9fa; border: 1px solid #ddd; padding: 10px 14px; border-radius: 8px;">
+      <div style="font-weight: 700; color: #2d3748; margin-bottom: 4px; font-size: 1.05em;"><i class="fa-solid fa-database"></i> Secure Storage</div>
+      <div style="color: #4a5568; line-height: 1.3;">Save raw timeseries and version datasets.</div>
+      <div style="margin-top: 8px;"><span class="tool-tag" style="background:#e2e8f0; color:#4a5568; border-color:#cbd5e0;">Google Cloud</span><span class="tool-tag" style="background:#e2e8f0; color:#4a5568; border-color:#cbd5e0;">DVC</span></div>
+    </div>
   </div>
-</div>
-<div class="flow-arrow-v">&#8595;</div>
-<div class="flow-step fragment">
-  <div class="fs-num">2</div>
-  <div class="fs-body">
-    <div class="fs-title"><i class="fa-solid fa-database"></i> Storage</div>
-    <div class="fs-detail">Raw timeseries, subject metadata, processing logs</div>
-    <div class="fs-tools"><span class="tool-tag">S3</span><span class="tool-tag">PostgreSQL</span><span class="tool-tag">Parquet</span></div>
+
+  <!-- Arrow + Extraction Phase (grouped fragment) -->
+  <div class="fragment">
+    <div style="text-align: center; color: var(--accent); font-size: 1.2em; line-height: 0.5; margin-bottom: 8px;">&#8595;</div>
+    <!-- Extraction Phase (Teal - matches Phase 1) -->
+    <div style="background: rgba(27, 107, 115, 0.04); border: 2px solid var(--accent); border-radius: 10px; padding: 12px 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-weight: 700; color: var(--accent); font-size: 1.1em; margin-bottom: 2px;"><i class="fa-solid fa-gears"></i> Feature Extraction</div>
+          <div style="color: #4a5568;">Run the exact same Python pipeline to extract metrics.</div>
+        </div>
+        <div style="text-align: right;">
+          <span class="tool-tag">Docker</span><span class="tool-tag">src/pipeline.py</span>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<div class="flow-arrow-v">&#8595;</div>
-<div class="flow-step fragment">
-  <div class="fs-num">3</div>
-  <div class="fs-body">
-    <div class="fs-title"><i class="fa-solid fa-gears"></i> Async processing</div>
-    <div class="fs-detail">Job queue → worker calls run_preprocessing(): validate → score trials → features → aggregate</div>
-    <div class="fs-tools"><span class="tool-tag">Celery / RQ</span><span class="tool-tag">Redis</span><span class="tool-tag">src/pipeline.py</span></div>
+
+  <!-- Arrow + Scoring & Delivery Phase (grouped fragment) -->
+  <div class="fragment">
+    <div style="text-align: center; color: #805ad5; font-size: 1.2em; line-height: 0.5; margin-bottom: 8px;">&#8595;</div>
+    <!-- Scoring & Delivery Phase (Purple - matches Phase 2) -->
+    <div style="background: rgba(128, 90, 213, 0.04); border: 2px solid #805ad5; border-radius: 10px; padding: 12px 16px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+         <div>
+           <div style="font-weight: 700; color: #805ad5; font-size: 1.1em; margin-bottom: 2px;"><i class="fa-solid fa-chart-bar"></i> Inference &amp; Scoring</div>
+           <div style="color: #4a5568; margin-bottom: 8px;">Apply frozen training Z-scores &amp; PCA loadings to new trials.</div>
+           <span class="tool-tag" style="color:#805ad5; background:rgba(128,90,213,0.1); border-color:rgba(128,90,213,0.2);">MLflow</span>
+           <span class="tool-tag" style="color:#805ad5; background:rgba(128,90,213,0.1); border-color:rgba(128,90,213,0.2);">scikit-learn</span>
+         </div>
+         <div style="border-left: 1px dashed rgba(128, 90, 213, 0.3); padding-left: 15px;">
+           <div style="font-weight: 700; color: #805ad5; font-size: 1.1em; margin-bottom: 2px;"><i class="fa-solid fa-server"></i> Results Delivered</div>
+           <div style="color: #4a5568; margin-bottom: 8px;">Return final biomarker scores via API.</div>
+           <span class="tool-tag" style="color:#805ad5; background:rgba(128,90,213,0.1); border-color:rgba(128,90,213,0.2);">FastAPI</span>
+           <span class="tool-tag" style="color:#805ad5; background:rgba(128,90,213,0.1); border-color:rgba(128,90,213,0.2);">Postman</span>
+         </div>
+      </div>
+    </div>
   </div>
-</div>
-</div>
-<div>
-<div class="flow-step fragment">
-  <div class="fs-num">4</div>
-  <div class="fs-body">
-    <div class="fs-title"><i class="fa-solid fa-chart-bar"></i> Analysis &amp; scoring</div>
-    <div class="fs-detail">run_analysis() applies frozen z-score parameters from training cohort</div>
-    <div class="fs-tools"><span class="tool-tag">zscore_params.csv</span><span class="tool-tag">scikit-learn</span><span class="tool-tag">feature store</span></div>
+
+  <!-- Arrow + Monitoring Phase (grouped fragment) -->
+  <div class="fragment">
+    <div style="text-align: center; color: #6b7a8d; font-size: 1.2em; line-height: 0.5; margin-bottom: 8px;">&#8595;</div>
+    <!-- Monitoring Phase (Dark Grey) -->
+    <div style="background: #f8f9fa; border: 2px solid #6b7a8d; border-radius: 10px; padding: 12px 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-weight: 700; color: #4a5568; font-size: 1.1em; margin-bottom: 2px;"><i class="fa-solid fa-bell"></i> Model Monitoring</div>
+          <div style="color: #718096;">Track feature drift and trigger pipeline tests on schedule.</div>
+        </div>
+        <div style="text-align: right;">
+          <span class="tool-tag" style="color:#4a5568; background:#e2e8f0; border-color:#cbd5e0;">GitHub Actions</span>
+          <span class="tool-tag" style="color:#4a5568; background:#e2e8f0; border-color:#cbd5e0;">Cloud Logging</span>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<div class="flow-arrow-v">&#8595;</div>
-<div class="flow-step fragment">
-  <div class="fs-num">5</div>
-  <div class="fs-body">
-    <div class="fs-title"><i class="fa-solid fa-server"></i> Serving</div>
-    <div class="fs-detail">GET /subject-features/{id} · GET /quality-report/{id}</div>
-    <div class="fs-tools"><span class="tool-tag">FastAPI</span><span class="tool-tag">cached results</span></div>
-  </div>
-</div>
-<div class="flow-arrow-v">&#8595;</div>
-<div class="flow-step fragment">
-  <div class="fs-num">6</div>
-  <div class="fs-body">
-    <div class="fs-title"><i class="fa-solid fa-bell"></i> Monitoring</div>
-    <div class="fs-detail">Signal-quality drift, feature drift, failure rate by device cohort</div>
-    <div class="fs-tools"><span class="tool-tag">Prometheus</span><span class="tool-tag">Grafana</span><span class="tool-tag">alerts</span></div>
-  </div>
-</div>
-</div>
+
 </div>
 ```
 
 ::: {.fragment .callout style="margin-top:14px;"}
-**Already separable.** `run_preprocessing()` and `run_analysis()` in `src/pipeline.py` map directly onto stages 3–4 — the API is a thin wrapper, not a rewrite. Saved `zscore_params.csv` lets new subjects be scored against the training distribution without recomputing on the full cohort.
+**Seamless Translation:** Steps 3 & 4 use `src/pipeline.py`. My focus as a Data Scientist is ensuring deployed logic matches offline validation, while leveraging tools I know to help bridge the MLOps gap.
 :::
 
 ::: notes
-- Ingestion separates I/O bound work from compute. Pydantic validates schema and ranges before the worker spins up.
-- Storage layer: S3 for raw timeseries (cheap, large), PostgreSQL for subject metadata and job state, Parquet feature store for downstream queries.
-- Async processing keeps the API responsive: a 30 s upload returns instantly with a job ID; the worker pool handles the heavy lifting.
-- Frozen z-score params are the key to incremental scoring — new cohorts do not change the standardisation, so per-subject scores remain comparable across releases.
-- Monitoring closes the loop: drift in signal quality, feature distributions, or failure rates by device triggers alerts before the next regulated release.
+- I want to highlight the stack I actually work with to bridge the gap to production.
+- Pydantic ensures the payloads I get match what my pipeline expects.
+- DVC versions my datasets on Google Cloud so my experiments are reproducible.
+- I can use Docker to containerize the exact environment my code needs.
+- MLflow logs my models and parameters, keeping my registry clean.
+- I test the FastAPI endpoints with Postman, and rely on GitHub actions for automated CI/CD checks.
+- I don't pretend to be the infra engineer, but I know how to package my work so they can use it.
 :::
 
 ## Regulated Development & Code Freezes
@@ -765,44 +857,6 @@ New data improves the system through controlled reprocessing and versioned model
 - DVC and MLflow are the two pieces missing from the current repo: DVC for dataset versioning, MLflow for experiment tracking and model registry. Both are git-friendly and don't change the existing pipeline structure.
 :::
 
-## Limitations & Next Steps
-
-```{=html}
-<div class="card-grid">
-  <div class="card fragment">
-    <h3><i class="fa-solid fa-chart-pie"></i> Effect-size ceiling</h3>
-    <p>Single-feature ρ ≈ 0.4 against a self-report target is at the upper end of what is typical. Honest scope, not a flaw to fix.</p>
-  </div>
-  <div class="card fragment">
-    <h3><i class="fa-solid fa-heart-crack"></i> BPM under-delivered</h3>
-    <p>VR PPG is motion-sensitive; cardiac features did not survive robustness checks. Better optical placement or ECG would change this.</p>
-  </div>
-  <div class="card fragment">
-    <h3><i class="fa-solid fa-brain"></i> No predictive model yet</h3>
-    <p>Next step: elastic-net regression with nested cross-validation to build a parsimonious multivariate index and honest generalisation estimates.</p>
-  </div>
-  <div class="card fragment">
-    <h3><i class="fa-solid fa-arrow-trend-down"></i> Habituation unmodelled</h3>
-    <p>Trial 1 differs from trial 10 as subjects acclimate. A mixed-effects model with trial index would isolate this variance.</p>
-  </div>
-  <div class="card fragment">
-    <h3><i class="fa-solid fa-users-viewfinder"></i> Responder subtypes unexplored</h3>
-    <p>Density-based clustering (HDBSCAN) or hierarchical clustering could reveal physiological responder subtypes without forcing artificial partitions on a continuous distribution.</p>
-  </div>
-  <div class="card fragment">
-    <h3><i class="fa-solid fa-arrow-right-arrow-left"></i> Cross-cohort validation</h3>
-    <p>The frozen z-score params are designed for incremental scoring. They need a held-out cohort to confirm generalisation.</p>
-  </div>
-</div>
-```
-
-::: notes
-- Frame the limitations as scope choices, not failures. The audience will respect honesty about ceiling effects more than oversold claims.
-- Elastic-net + nested CV: elastic-net combines L1 (feature selection) and L2 (shrinkage) penalties for a parsimonious model; nested CV ensures the performance estimate is not contaminated by the hyperparameter search.
-- HDBSCAN is preferred over K-Means or UMAP because it does not force a fixed number of clusters and handles noise natively — important for a continuous physiological distribution where artificial partitioning would be misleading.
-- Habituation modelling is the most concrete next methodological step; mixed-effects with trial index would change the picture for tonic features that drift across the session.
-- Cross-cohort validation is the gating item before any clinical or product claim.
-:::
 
 ## Closing
 
